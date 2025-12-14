@@ -466,15 +466,15 @@
     <!-- Top Announcement Bar -->
     <div class="bg-primary text-text-light text-center py-2 marquee-container"> <!-- Added marquee-container class -->
         <div class="marquee whitespace-nowrap inline-block">
-            <span class="mx-4">âœ¨ Experience the luxury of Sealed Brew cold coffee!</span>
-            <span class="mx-4">â˜•ï¸ Discover our unique flavors!</span>
-            <span class="mx-4">ðŸŽ‰ Join the Sealed Brew Membership for exclusive benefits!</span>
-            <span class="mx-4">ðŸšš Free local delivery on orders over â‚¹500!</span>
+            <span class="mx-4">✨ Experience the luxury of Sealed Brew cold coffee!</span>
+            <span class="mx-4">☕ Discover our unique flavors!</span>
+            <span class="mx-4">🎉 Join the Sealed Brew Membership for exclusive benefits!</span>
+            <span class="mx-4">🚚 Free local delivery on orders over ₹500!</span>
             <!-- Duplicated content for seamless looping -->
-            <span class="mx-4">âœ¨ Experience the luxury of Sealed Brew cold coffee!</span>
-            <span class="mx-4">â˜•ï¸ Discover our unique flavors!</span>
-            <span class="mx-4">ðŸŽ‰ Join the Sealed Brew Membership for exclusive benefits!</span>
-            <span class="mx-4">ðŸšš Free local delivery on orders over â‚¹500!</span>
+            <span class="mx-4">✨ Experience the luxury of Sealed Brew cold coffee!</span>
+            <span class="mx-4">☕ Discover our unique flavors!</span>
+            <span class="mx-4">🎉 Join the Sealed Brew Membership for exclusive benefits!</span>
+            <span class="mx-4">🚚 Free local delivery on orders over ₹500!</span>
         </div>
     </div>
 
@@ -554,7 +554,7 @@
         <div class="container mx-auto px-4">
             <div class="flex flex-col md:flex-row items-center">
                 <div class="md:w-1/2 mb-10 md:mb-0">
-                    <!-- Image path updated to placeholder -->
+                    <!-- Image path updated to 20250625_001155.gif -->
                     <img src="20250625_001155.gif" alt="Sealed Brew Membership Ad" class="rounded-lg shadow-lg w-full h-auto object-contain">
                 </div>
                 <div class="md:w-1/2 md:pl-12">
@@ -562,7 +562,8 @@
                     <p class="text-lg text-text-dark mb-6">Unlock exclusive benefits, monthly deliveries of your favorite blends, and special discounts. Experience the ultimate coffee journey with NSL Forge.</p>
                     <div class="grid grid-cols-2 gap-4 mb-8">
                         <div class="border-r border-gray-300 pr-4">
-                            <div class="text-3xl font-bold text-primary mb-1">â‚¹149</div>
+                            <!-- Fixed Rupee symbol -->
+                            <div class="text-3xl font-bold text-primary mb-1">₹149</div>
                             <div class="text-sm text-text-dark">Monthly Subscription</div>
                         </div>
                         <div>
@@ -663,7 +664,8 @@
             <p class="text-center text-gray-500 mt-10">Your cart is empty.</p>
         </div>
         <footer>
-            <div id="cart-total" class="font-bold text-xl text-primary mb-4">Total: â‚¹0.00</div>
+            <!-- Fixed Rupee symbol -->
+            <div id="cart-total" class="font-bold text-xl text-primary mb-4">Total: ₹0.00</div>
             <button class="btn-checkout" id="checkout-btn">Proceed to Checkout</button>
         </footer>
     </aside>
@@ -898,7 +900,8 @@
 
         function calculateCartTotal() {
             const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-            cartTotal.textContent = `Total: â‚¹${total.toFixed(2)}`;
+            // Fixed Rupee symbol in JS
+            cartTotal.textContent = `Total: ₹${total.toFixed(2)}`;
             return total;
         }
 
@@ -921,7 +924,8 @@
                                 <button class="qty-button increment text-sm" aria-label="Increase quantity of ${item.name}" data-id="${item.id}">+</button>
                                 <button class="qty-button remove text-sm" aria-label="Remove ${item.name} from cart" data-id="${item.id}">Remove</button>
                             </div>
-                            <div class="cart-item-price mt-2">â‚¹${(item.price * item.quantity).toFixed(2)}</div>
+                            <!-- Fixed Rupee symbol in JS -->
+                            <div class="cart-item-price mt-2">₹${(item.price * item.quantity).toFixed(2)}</div>
                         </div>
                     `;
                     // Hide quantity controls for membership
@@ -947,7 +951,8 @@
                         }
                         return `${item.quantity} x ${item.name}`;
                     }).join('\n');
-                    orderDetailsTextarea.value += `\n\nTotal: â‚¹${calculateCartTotal().toFixed(2)}`;
+                    // Fixed Rupee symbol in JS
+                    orderDetailsTextarea.value += `\n\nTotal: ₹${calculateCartTotal().toFixed(2)}`;
                 }
             } else {
                 console.warn('Order details textarea not found.'); // Log if element is missing
@@ -1092,7 +1097,8 @@
                             <h3 class="font-semibold text-lg text-text-dark">${product.name}</h3>
                             <p class="text-gray-600 mb-2 text-sm">${product.desc}</p>
                             <div class="flex justify-between items-center">
-                                <span class="font-bold text-primary">â‚¹${product.price}</span>
+                                <!-- Fixed Rupee symbol -->
+                                <span class="font-bold text-primary">₹${product.price}</span>
                                 <button class="bg-primary text-text-light px-3 py-1 rounded-full text-sm hover:bg-secondary transition duration-300 add-to-cart-btn" data-product-id="${product.id}">Add to Cart</button>
                             </div>
                         </div>
@@ -1412,3 +1418,4 @@
     </script>
 </body>
 </html>
+
