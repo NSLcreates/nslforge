@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sealed Brew by NSL Forge | Premium Cold Coffee</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0A0A0A;
+            --accent: #D4AF37; 
+            --accent-light: #F9E498;
+            --accent-glow: rgba(212, 175, 55, 0.4);
+            --surface: #121212;
+            --text-main: #FFFFFF;
+            --text-muted: #A0A0A0;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            background-color: var(--primary);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+            overflow-y: hidden;
+        }
+
+        h1, h2, h3, h4, .brand-font { font-family: 'Playfair Display', serif; }
+
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(to right, #D4AF37, #F9E498, #D4AF37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Hero Animation Elements */
+        .hero-container {
+            position: relative;
+            z-index: 10;
+        }
+
+        .floating-bean {
+            position: absolute;
+            z-index: -1;
+            opacity: 0.15;
+            filter: blur(1px);
+            pointer-events: none;
+        }
+
+        @keyframes float-slow {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(15px, -20px) rotate(10deg); }
+            66% { transform: translate(-10px, 10px) rotate(-5deg); }
+        }
+
+        .bean-1 { top: -10%; left: 15%; animation: float-slow 8s ease-in-out infinite; width: 60px; }
+        .bean-2 { top: 40%; right: 10%; animation: float-slow 12s ease-in-out infinite reverse; width: 80px; }
+        .bean-3 { bottom: -20%; left: 40%; animation: float-slow 10s ease-in-out infinite 2s; width: 50px; }
+
+        /* Legal Gateway */
+        #legal-gateway {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        #legal-gateway.hidden-gate {
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(1.1);
+            transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .btn-premium {
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: black;
+            font-weight: 800;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+        }
+
+        .btn-premium:hover:not(:disabled) { 
+            box-shadow: 0 0 30px var(--accent-glow);
+            transform: translateY(-2px);
+        }
+
+        /* 2xN GRID LAYOUT (Responsive) */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .product-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 2.5rem;
+            }
+        }
+
+        /* PILL SHAPED CARDS */
+        .pill-card {
+            border-radius: 9999px;
+            padding: 1rem;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1px solid var(--glass-border);
+            background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            height: 100%;
+        }
+
+        @media (min-width: 768px) {
+            .pill-card { padding: 1.5rem; }
+        }
+
+        .pill-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-8px);
+            background: rgba(212, 175, 55, 0.08);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .pill-image-container {
+            width: 100%;
+            aspect-ratio: 1/1;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-bottom: 1rem;
+            position: relative;
+            border: 2px solid rgba(255,255,255,0.05);
+        }
+
+        .pill-card:hover .pill-image-container {
+            border-color: var(--accent);
+        }
+
+        .add-btn-pop {
+            position: absolute;
+            bottom: 5%;
+            left: 50%;
+            transform: translate(-50%, 50%) scale(0.5);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .pill-card:hover .add-btn-pop {
+            transform: translate(-50%, 0) scale(1);
+            opacity: 1;
+        }
+
+        .filter-pill {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23D4AF37'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 0.6rem;
+            padding-right: 2rem !important;
+        }
+
+        #cart-panel { transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- LEGAL GATEWAY -->
+    <div id="legal-gateway">
+        <div class="max-w-xl w-full p-8 md:p-12 glass-card rounded-[3rem] border-accent/20 text-center shadow-[0_0_100px_rgba(212,175,55,0.1)]">
+            <h1 class="text-4xl md:text-5xl font-black brand-font mb-2 tracking-tighter">SEALED<span class="gold-gradient-text">BREW</span></h1>
+            <p class="text-[10px] text-accent uppercase tracking-[0.5em] mb-12 font-black opacity-60">Authentication Required</p>
+            
+            <div id="terms-box" class="hidden mb-8 text-left glass-card p-8 rounded-[2rem] max-h-72 overflow-y-auto text-sm text-muted leading-relaxed border-white/5">
+                <h3 class="gold-gradient-text font-black brand-font text-xl mb-4">Forge Terms</h3>
+                <div class="space-y-4">
+                    <p><strong>1. Pre-Order Protocol:</strong> This platform is currently in a "Pre-Order" phase. Manual order processing will only commence after <strong>May 2026</strong>.</p>
+                    <p><strong>2. Experimental Nature:</strong> Learning project by minors (14 & 15).</p>
+                    <p><strong>3. Disclaimer:</strong> Home-brewed coffee. No FSSAI. Use at your own risk.</p>
+                    <p><strong>4. Shipping Limitation:</strong> Orders delivered only within <strong>Navsari, Gujarat (396445)</strong>.</p>
+                </div>
+            </div>
+
+            <button id="toggle-terms" class="text-accent text-[11px] uppercase font-black tracking-widest mb-10 block w-full hover:opacity-60 transition-all">
+                <i class="fa-solid fa-scroll mr-2"></i>Access Terms & Conditions
+            </button>
+
+            <div class="flex flex-col gap-6 items-center">
+                <label class="flex items-center gap-4 cursor-pointer">
+                    <input type="checkbox" id="gate-check" class="w-6 h-6 rounded border-accent/40 bg-transparent accent-accent">
+                    <span class="text-[11px] uppercase tracking-widest font-black text-muted text-center">Agree to the Forge protocol</span>
+                </label>
+                <button id="enter-forge" disabled class="btn-premium w-full md:w-auto px-16 py-6 rounded-full text-xs shadow-xl">Enter Website</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- HEADER -->
+    <header class="fixed top-0 left-0 w-full z-50 glass-card border-t-0 border-x-0 rounded-none px-4 md:px-6 py-4 md:py-6">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-black shadow-lg">
+                    <i class="fa-solid fa-droplet text-lg"></i>
+                </div>
+                <h1 class="text-xl md:text-2xl font-black brand-font tracking-tighter">SEALED<span class="gold-gradient-text">BREW</span></h1>
+            </div>
+            
+            <div class="flex items-center gap-4 md:gap-8">
+                <nav class="hidden lg:flex gap-12 text-[10px] uppercase font-black tracking-[0.3em] text-muted">
+                    <a href="#shop" class="hover:text-accent transition-all">The Shop</a>
+                    <a href="#membership" class="hover:text-accent transition-all">Elite Access</a>
+                    <a href="#about" class="hover:text-accent transition-all">Our Story</a>
+                </nav>
+                <button id="cart-open" class="relative group p-2">
+                    <i class="fa-solid fa-cart-shopping text-xl group-hover:text-accent transition-colors"></i>
+                    <span id="cart-count" class="absolute -top-1 -right-1 bg-accent text-black text-[9px] font-black w-4 h-4 flex items-center justify-center rounded-full border-2 border-black">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="pt-32 md:pt-48 pb-10 px-4 md:px-6">
+        <!-- Hero with Animated Beans -->
+        <section class="max-w-6xl mx-auto text-center mb-16 md:mb-32 hero-container">
+            <!-- SVG Coffee Beans -->
+            <svg class="floating-bean bean-1" viewBox="0 0 100 100" fill="currentColor">
+                <path d="M50 5C25 5 5 25 5 50s20 45 45 45 45-20 45-45S75 5 50 5zm0 80c-15 0-25-10-25-25s10-25 25-25 25 10 25 25-10 25-25 25z" fill="#D4AF37"/>
+                <path d="M30 50c0 15 10 25 25 25" stroke="#D4AF37" stroke-width="2" fill="none" opacity="0.5"/>
+            </svg>
+            <svg class="floating-bean bean-2" viewBox="0 0 100 100" fill="currentColor">
+                <path d="M50 5C25 5 5 25 5 50s20 45 45 45 45-20 45-45S75 5 50 5zm0 80c-15 0-25-10-25-25s10-25 25-25 25 10 25 25-10 25-25 25z" fill="#F9E498"/>
+            </svg>
+            <svg class="floating-bean bean-3" viewBox="0 0 100 100" fill="currentColor">
+                <path d="M50 5C25 5 5 25 5 50s20 45 45 45 45-20 45-45S75 5 50 5zm0 80c-15 0-25-10-25-25s10-25 25-25 25 10 25 25-10 25-25 25z" fill="#D4AF37"/>
+            </svg>
+
+            <h2 class="text-4xl md:text-9xl font-black brand-font mb-8 leading-[1.1] md:leading-[0.85] tracking-tighter">
+                Crafted for<br><span class="gold-gradient-text italic">The Elite.</span>
+            </h2>
+            <p class="text-[10px] md:text-xs uppercase font-black tracking-[0.6em] text-accent/60">Manual Processing Starts May 2026</p>
+        </section>
+
+        <!-- SEARCH PANEL -->
+        <section id="shop" class="max-w-7xl mx-auto mb-12 md:mb-24">
+            <div class="glass-card p-3 rounded-[2rem] md:rounded-[3rem] border-white/10 flex flex-col md:flex-row gap-2 md:gap-4">
+                <div class="relative flex-grow">
+                    <input type="text" id="search" placeholder="Search menu..." class="w-full bg-white/5 border border-white/5 rounded-2xl md:rounded-[2rem] px-6 py-4 md:px-10 md:py-6 text-sm focus:outline-none focus:border-accent/40 transition-all placeholder:text-white/10">
+                    <i class="fa-solid fa-magnifying-glass absolute right-6 md:right-10 top-1/2 -translate-y-1/2 text-accent/40"></i>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <select id="cat-filter" class="filter-pill bg-white/5 border border-white/5 rounded-2xl md:rounded-[2rem] px-4 py-4 md:px-8 md:py-6 text-[8px] md:text-[10px] font-black uppercase tracking-widest text-accent cursor-pointer focus:outline-none">
+                        <option value="all">Category</option>
+                        <option value="Coffee Blends">Coffee</option>
+                        <option value="Milk Shakes">Shakes</option>
+                        <option value="Frappes">Frappes</option>
+                    </select>
+                    <select id="sort-filter" class="filter-pill bg-white/5 border border-white/5 rounded-2xl md:rounded-[2rem] px-4 py-4 md:px-8 md:py-6 text-[8px] md:text-[10px] font-black uppercase tracking-widest text-accent cursor-pointer focus:outline-none">
+                        <option value="default">Sort</option>
+                        <option value="low">Low Price</option>
+                        <option value="high">High Price</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <!-- PRODUCT GRID -->
+        <section class="max-w-7xl mx-auto mb-20 md:mb-40 px-2">
+            <div id="grid-root" class="product-grid"></div>
+        </section>
+
+        <!-- MEMBERSHIP -->
+        <section id="membership" class="max-w-7xl mx-auto mb-24 md:mb-52 px-2">
+            <div class="glass-card rounded-[3rem] md:rounded-[4rem] p-1 border-accent/20">
+                <div class="bg-black/40 rounded-[2.9rem] md:rounded-[3.8rem] overflow-hidden p-8 md:p-24 relative">
+                    <div class="grid md:grid-cols-2 gap-12 items-center relative z-10">
+                        <div>
+                            <span class="inline-block bg-accent/10 text-accent text-[9px] font-black uppercase tracking-[0.4em] px-4 py-2 rounded-full mb-6 border border-accent/20">Elite Membership</span>
+                            <h2 class="text-3xl md:text-7xl font-black brand-font mb-6 leading-tight">Join the <span class="gold-gradient-text italic">Inner Circle.</span></h2>
+                        </div>
+                        <div class="glass-card p-8 md:p-12 rounded-[2.5rem] md:rounded-[3rem] border-white/10 text-center flex flex-col items-center">
+                            <i class="fa-solid fa-gem text-5xl gold-gradient-text mb-6"></i>
+                            <h3 class="text-2xl md:text-4xl font-black brand-font mb-2 uppercase">Forge Elite</h3>
+                            <div class="mb-10">
+                                <span class="text-4xl md:text-6xl font-black gold-gradient-text brand-font">₹399</span>
+                            </div>
+                            <button onclick="addToCart('MEMBERSHIP')" class="btn-premium w-full py-6 md:py-8 rounded-full text-[10px] md:text-xs font-black shadow-2xl">Initialize Membership</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-black py-20 px-6 border-t border-white/5 text-center">
+        <h1 class="text-3xl font-black brand-font mb-4 tracking-tighter">SEALED<span class="gold-gradient-text">BREW</span></h1>
+        <div class="flex flex-col items-center gap-6">
+            <a href="https://instagram.com/sealedbrew" target="_blank" class="group flex items-center gap-3 bg-white/5 px-6 py-3 rounded-full border border-white/5 hover:border-accent/40 transition-all">
+                <i class="fa-brands fa-instagram text-xl gold-gradient-text group-hover:scale-110 transition-transform"></i>
+                <span class="text-[10px] font-black uppercase tracking-[0.2em] text-muted group-hover:text-accent">@sealedbrew</span>
+            </a>
+            <p class="text-[9px] text-muted/40 uppercase tracking-[0.3em] font-black italic">Navsari, Gujarat, India</p>
+        </div>
+    </footer>
+
+    <!-- Cart Sidebar -->
+    <div id="cart-bg" class="fixed inset-0 bg-black/95 backdrop-blur-3xl z-[60] opacity-0 pointer-events-none transition-all duration-500"></div>
+    <aside id="cart-panel" class="fixed top-0 right-0 h-full w-full max-w-md bg-[#080808] z-[70] translate-x-full flex flex-col border-l border-white/5">
+        <div class="p-8 border-b border-white/5 flex items-center justify-between">
+            <h2 class="text-2xl font-black brand-font uppercase tracking-tighter">Archive</h2>
+            <button id="cart-close-btn" class="text-accent hover:rotate-90 transition-transform"><i class="fa-solid fa-xmark text-2xl"></i></button>
+        </div>
+        <div id="cart-list" class="flex-grow overflow-y-auto p-6 space-y-6"></div>
+        
+        <div class="p-8 bg-[#0C0C0C] border-t border-white/5 space-y-6">
+            <div class="preorder-alert p-5 rounded-3xl flex items-start gap-4" style="background: rgba(212, 175, 55, 0.05); border: 1px dashed rgba(212, 175, 55, 0.3);">
+                <i class="fa-solid fa-clock-rotate-left text-accent mt-1"></i>
+                <div class="space-y-2">
+                    <p class="text-[10px] text-accent leading-relaxed uppercase tracking-wider font-black">Pre-Order Notice</p>
+                    <p class="text-[9px] text-muted/70 leading-tight">This is a reservation system. Orders will be manually processed only after <strong>May 2026</strong>. Delivery strictly within Navsari (396445).</p>
+                </div>
+            </div>
+            <div class="flex justify-between items-end">
+                <p class="text-[9px] uppercase font-black text-muted tracking-widest">Total</p>
+                <span id="cart-total" class="text-3xl font-black gold-gradient-text brand-font">₹0</span>
+            </div>
+            <button class="w-full btn-premium py-6 rounded-full text-[10px] font-black">Reserve My Batch</button>
+        </div>
+    </aside>
+
+    <script>
+        const products = [
+            { id: 1, name: "Caramel Cold Coffee", category: "Coffee Blends", price: 225, image: "https://images.unsplash.com/photo-1572286258217-40142c1c6a70?auto=format&fit=crop&w=800&q=80" },
+            { id: 2, name: "Everyday Cold Coffee", category: "Coffee Blends", price: 205, image: "https://images.unsplash.com/photo-1517701604599-bb29b565090c?auto=format&fit=crop&w=800&q=80" },
+            { id: 3, name: "Brownie Blast Frappe", category: "Frappes", price: 189, image: "https://images.unsplash.com/photo-1544145945-f904253d0c7b?auto=format&fit=crop&w=800&q=80" },
+            { id: 4, name: "Brownie Cold Coffee", category: "Coffee Blends", price: 180, image: "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=800&q=80" },
+            { id: 5, name: "Velvet Chocolate Reserve", category: "Coffee Blends", price: 131, image: "https://images.unsplash.com/photo-1541167760496-162955ed8a9f?auto=format&fit=crop&w=800&q=80" },
+            { id: 6, name: "Hazelnut Signature Blend", category: "Coffee Blends", price: 120, image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=800&q=80" },
+            { id: 7, name: "Butterscotch Velvet Essence", category: "Coffee Blends", price: 120, image: "https://images.unsplash.com/photo-1559496417-e7f25cb247f3?auto=format&fit=crop&w=800&q=80" },
+            { id: 8, name: "Vanilla Creme Select", category: "Coffee Blends", price: 109, image: "https://images.unsplash.com/photo-1553909489-cd47e0907980?auto=format&fit=crop&w=800&q=80" },
+            { id: 9, name: "Classic Estate Brew", category: "Coffee Blends", price: 98, image: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=800&q=80" },
+            { id: 10, name: "Kit Kat Blast Milk Shake", category: "Milk Shakes", price: 249, image: "https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=800&q=80" },
+            { id: 11, name: "Ferrero Rocher Shake", category: "Milk Shakes", price: 249, image: "https://images.unsplash.com/photo-1579954115545-a95591f28bee?auto=format&fit=crop&w=800&q=80" },
+            { id: 12, name: "Strawberry Milk Shake", category: "Milk Shakes", price: 249, image: "https://images.unsplash.com/photo-1586966285698-3d293bbdfce7?auto=format&fit=crop&w=800&q=80" },
+            { id: 13, name: "Nutella Brownie Shake", category: "Milk Shakes", price: 249, image: "https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=800&q=80" },
+            { id: 14, name: "Snickers Shake", category: "Milk Shakes", price: 240, image: "https://images.unsplash.com/photo-1541658016709-82535e94bc71?auto=format&fit=crop&w=800&q=80" },
+            { id: 15, name: "Oreo Blast Milk Shake", category: "Milk Shakes", price: 189, image: "https://images.unsplash.com/photo-1546452204-1293d6e87f3c?auto=format&fit=crop&w=800&q=80" },
+            { id: 16, name: "Oreo Milk Shake", category: "Milk Shakes", price: 180, image: "https://images.unsplash.com/photo-1553787499-6f9133860278?auto=format&fit=crop&w=800&q=80" },
+            { id: 17, name: "Chocolate Milk Shake", category: "Milk Shakes", price: 149, image: "https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=800&q=80" },
+            { id: 18, name: "KitKat Frappe", category: "Frappes", price: 249, image: "https://images.unsplash.com/photo-1544145945-f904253d0c7b?auto=format&fit=crop&w=800&q=80" }
+        ];
+
+        let cart = [];
+
+        // GATEWAY LOGIC
+        const gateCheck = document.getElementById('gate-check');
+        const enterBtn = document.getElementById('enter-forge');
+        const termsToggle = document.getElementById('toggle-terms');
+        const termsBox = document.getElementById('terms-box');
+
+        termsToggle.onclick = () => {
+            const isHidden = termsBox.classList.toggle('hidden');
+            termsToggle.innerHTML = isHidden ? '<i class="fa-solid fa-scroll mr-2"></i>Access Terms' : '<i class="fa-solid fa-chevron-up mr-2"></i>Hide Terms';
+        };
+
+        gateCheck.onchange = () => enterBtn.disabled = !gateCheck.checked;
+        enterBtn.onclick = () => {
+            document.getElementById('legal-gateway').classList.add('hidden-gate');
+            document.body.style.overflowY = 'auto';
+            sessionStorage.setItem('gate-cleared', 'true');
+        };
+
+        if(sessionStorage.getItem('gate-cleared')) {
+            document.getElementById('legal-gateway').style.display = 'none';
+            document.body.style.overflowY = 'auto';
+        }
+
+        function renderItems() {
+            const query = document.getElementById('search').value.toLowerCase();
+            const cat = document.getElementById('cat-filter').value;
+            const sort = document.getElementById('sort-filter').value;
+
+            let items = products.filter(p => (cat === 'all' || p.category === cat) && p.name.toLowerCase().includes(query));
+            
+            if(sort === 'low') items.sort((a,b) => a.price - b.price);
+            if(sort === 'high') items.sort((a,b) => b.price - a.price);
+
+            document.getElementById('grid-root').innerHTML = items.map(p => `
+                <div class="pill-card cursor-pointer group">
+                    <div class="pill-image-container">
+                        <img src="${p.image}" class="w-full h-full object-cover transition-all duration-700 grayscale group-hover:grayscale-0 group-hover:scale-110">
+                        <button onclick="event.stopPropagation(); addToCart(${p.id})" class="add-btn-pop w-10 h-10 md:w-12 md:h-12 btn-premium rounded-full flex items-center justify-center shadow-2xl z-20">
+                            <i class="fa-solid fa-plus text-[10px] md:text-sm"></i>
+                        </button>
+                    </div>
+                    <div class="px-1 md:px-2 pb-2 md:pb-6">
+                        <span class="text-accent text-[7px] md:text-[8px] font-black uppercase tracking-widest block mb-1 md:mb-2 opacity-60">${p.category}</span>
+                        <h3 class="text-[10px] md:text-[12px] font-black brand-font uppercase leading-tight mb-2 md:mb-3 px-1 line-clamp-2">${p.name}</h3>
+                        <div class="bg-white/5 inline-block px-3 md:px-4 py-0.5 md:py-1 rounded-full border border-white/5">
+                            <span class="text-[9px] md:text-xs font-black gold-gradient-text">₹${p.price}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        window.addToCart = (id) => {
+            let item;
+            if(id === 'MEMBERSHIP') {
+                item = { id: 'ELITE', name: "Forge Elite Membership", price: 399, image: "https://images.unsplash.com/photo-1614850523296-d8c1af93d400?auto=format&fit=crop&w=400&q=80" };
+            } else {
+                item = products.find(p => p.id === id);
+            }
+            const exists = cart.find(c => c.id === item.id);
+            if(exists) exists.qty++;
+            else cart.push({...item, qty: 1});
+            syncCart();
+            toggleCart(true);
+        };
+
+        function syncCart() {
+            const count = cart.reduce((a, b) => a + b.qty, 0);
+            const total = cart.reduce((a, b) => a + (b.price * b.qty), 0);
+            document.getElementById('cart-count').innerText = count;
+            document.getElementById('cart-total').innerText = `₹${total}`;
+            const list = document.getElementById('cart-list');
+            if(cart.length === 0) {
+                list.innerHTML = `<div class="py-20 text-center opacity-20 italic font-black uppercase text-[10px] tracking-widest">Archive Empty</div>`;
+                return;
+            }
+            list.innerHTML = cart.map(i => `
+                <div class="flex gap-4 items-center bg-white/5 p-4 rounded-3xl border border-white/5">
+                    <img src="${i.image}" class="w-12 h-12 object-cover rounded-full grayscale">
+                    <div class="flex-grow min-w-0">
+                        <h4 class="text-[9px] font-black uppercase truncate">${i.name}</h4>
+                        <p class="text-accent text-xs font-black mt-1">₹${i.price}</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="qty('${i.id}', -1)" class="w-6 h-6 rounded-full border border-white/10 flex items-center justify-center text-[10px]">-</button>
+                        <span class="text-[10px] font-black">${i.qty}</span>
+                        <button onclick="qty('${i.id}', 1)" class="w-6 h-6 rounded-full border border-white/10 flex items-center justify-center text-[10px]">+</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        window.qty = (id, d) => {
+            const i = cart.find(c => c.id == id);
+            if(i) {
+                i.qty += d;
+                if(i.qty <= 0) cart = cart.filter(c => c.id != id);
+                syncCart();
+            }
+        };
+
+        function toggleCart(b) {
+            document.getElementById('cart-panel').classList.toggle('translate-x-full', !b);
+            document.getElementById('cart-bg').classList.toggle('opacity-0', !b);
+            document.getElementById('cart-bg').classList.toggle('pointer-events-none', !b);
+        }
+
+        document.getElementById('cart-open').onclick = () => toggleCart(true);
+        document.getElementById('cart-close-btn').onclick = () => toggleCart(false);
+        document.getElementById('cart-bg').onclick = () => toggleCart(false);
+        document.getElementById('search').oninput = renderItems;
+        document.getElementById('cat-filter').onchange = renderItems;
+        document.getElementById('sort-filter').onchange = renderItems;
+
+        renderItems();
+    </script>
+</body>
+</html>
+
