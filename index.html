@@ -25,7 +25,6 @@
             color: var(--text-main);
             font-family: 'Plus Jakarta Sans', sans-serif;
             overflow-x: hidden;
-            overflow-y: hidden;
         }
 
         h1, h2, h3, h4, .brand-font { font-family: 'Playfair Display', serif; }
@@ -99,7 +98,25 @@
             transform: translateY(-2px);
         }
 
-        /* 2xN GRID LAYOUT (Responsive) */
+        /* Input Styling */
+        .form-input {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            border-radius: 9999px;
+            padding: 1rem 1.5rem;
+            width: 100%;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .form-input:focus {
+            border-color: var(--accent);
+            background: rgba(212, 175, 55, 0.05);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
+        }
+
+        /* 2xN GRID LAYOUT */
         .product-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr); 
@@ -113,7 +130,6 @@
             }
         }
 
-        /* PILL SHAPED CARDS */
         .pill-card {
             border-radius: 9999px;
             padding: 1rem;
@@ -127,17 +143,6 @@
             height: 100%;
         }
 
-        @media (min-width: 768px) {
-            .pill-card { padding: 1.5rem; }
-        }
-
-        .pill-card:hover {
-            border-color: var(--accent);
-            transform: translateY(-8px);
-            background: rgba(212, 175, 55, 0.08);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-        }
-
         .pill-image-container {
             width: 100%;
             aspect-ratio: 1/1;
@@ -146,10 +151,6 @@
             margin-bottom: 1rem;
             position: relative;
             border: 2px solid rgba(255,255,255,0.05);
-        }
-
-        .pill-card:hover .pill-image-container {
-            border-color: var(--accent);
         }
 
         .add-btn-pop {
@@ -166,16 +167,10 @@
             opacity: 1;
         }
 
-        .filter-pill {
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23D4AF37'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 0.75rem center;
-            background-size: 0.6rem;
-            padding-right: 2rem !important;
+        #cart-panel, #checkout-overlay { 
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); 
         }
 
-        #cart-panel { transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
     </style>
@@ -191,10 +186,10 @@
             <div id="terms-box" class="hidden mb-8 text-left glass-card p-8 rounded-[2rem] max-h-72 overflow-y-auto text-sm text-muted leading-relaxed border-white/5">
                 <h3 class="gold-gradient-text font-black brand-font text-xl mb-4">Forge Terms</h3>
                 <div class="space-y-4">
-                    <p><strong>1. Pre-Order Protocol:</strong> This platform is currently in a "Pre-Order" phase. Manual order processing will only commence after <strong>May 2026</strong>.</p>
+                    <p><strong>1. Pre-Order Protocol:</strong> Manual order processing starts <strong>May 2026</strong>.</p>
                     <p><strong>2. Experimental Nature:</strong> Learning project by minors (14 & 15).</p>
-                    <p><strong>3. Disclaimer:</strong> Home-brewed coffee. No FSSAI. Use at your own risk.</p>
-                    <p><strong>4. Shipping Limitation:</strong> Orders delivered only within <strong>Navsari, Gujarat (396445)</strong>.</p>
+                    <p><strong>3. Disclaimer:</strong> Home-brewed coffee. No FSSAI.</p>
+                    <p><strong>4. Shipping Limitation:</strong> Only within <strong>Navsari, Gujarat (396445)</strong>.</p>
                 </div>
             </div>
 
@@ -226,7 +221,6 @@
                 <nav class="hidden lg:flex gap-12 text-[10px] uppercase font-black tracking-[0.3em] text-muted">
                     <a href="#shop" class="hover:text-accent transition-all">The Shop</a>
                     <a href="#membership" class="hover:text-accent transition-all">Elite Access</a>
-                    <a href="#about" class="hover:text-accent transition-all">Our Story</a>
                 </nav>
                 <button id="cart-open" class="relative group p-2">
                     <i class="fa-solid fa-cart-shopping text-xl group-hover:text-accent transition-colors"></i>
@@ -237,50 +231,17 @@
     </header>
 
     <main class="pt-32 md:pt-48 pb-10 px-4 md:px-6">
-        <!-- Hero with Animated Beans -->
+        <!-- Hero Section -->
         <section class="max-w-6xl mx-auto text-center mb-16 md:mb-32 hero-container">
-            <svg class="floating-bean bean-1" viewBox="0 0 100 100" fill="currentColor">
-                <path d="M50 5C25 5 5 25 5 50s20 45 45 45 45-20 45-45S75 5 50 5zm0 80c-15 0-25-10-25-25s10-25 25-25 25 10 25 25-10 25-25 25z" fill="#D4AF37"/>
-                <path d="M30 50c0 15 10 25 25 25" stroke="#D4AF37" stroke-width="2" fill="none" opacity="0.5"/>
-            </svg>
-            <svg class="floating-bean bean-2" viewBox="0 0 100 100" fill="currentColor">
-                <path d="M50 5C25 5 5 25 5 50s20 45 45 45 45-20 45-45S75 5 50 5zm0 80c-15 0-25-10-25-25s10-25 25-25 25 10 25 25-10 25-25 25z" fill="#F9E498"/>
-            </svg>
-            <svg class="floating-bean bean-3" viewBox="0 0 100 100" fill="currentColor">
-                <path d="M50 5C25 5 5 25 5 50s20 45 45 45 45-20 45-45S75 5 50 5zm0 80c-15 0-25-10-25-25s10-25 25-25 25 10 25 25-10 25-25 25z" fill="#D4AF37"/>
-            </svg>
-
+            <svg class="floating-bean bean-1" viewBox="0 0 100 100" fill="currentColor"><path d="M50 5C25 5 5 25 5 50s20 45 45 45 45-20 45-45S75 5 50 5zm0 80c-15 0-25-10-25-25s10-25 25-25 25 10 25 25-10 25-25 25z" fill="#D4AF37"/></svg>
             <h2 class="text-4xl md:text-9xl font-black brand-font mb-8 leading-[1.1] md:leading-[0.85] tracking-tighter">
                 Crafted for<br><span class="gold-gradient-text italic">The Elite.</span>
             </h2>
             <p class="text-[10px] md:text-xs uppercase font-black tracking-[0.6em] text-accent/60">Manual Processing Starts May 2026</p>
         </section>
 
-        <!-- SEARCH PANEL -->
-        <section id="shop" class="max-w-7xl mx-auto mb-12 md:mb-24">
-            <div class="glass-card p-3 rounded-[2rem] md:rounded-[3rem] border-white/10 flex flex-col md:flex-row gap-2 md:gap-4">
-                <div class="relative flex-grow">
-                    <input type="text" id="search" placeholder="Search menu..." class="w-full bg-white/5 border border-white/5 rounded-2xl md:rounded-[2rem] px-6 py-4 md:px-10 md:py-6 text-sm focus:outline-none focus:border-accent/40 transition-all placeholder:text-white/10">
-                    <i class="fa-solid fa-magnifying-glass absolute right-6 md:right-10 top-1/2 -translate-y-1/2 text-accent/40"></i>
-                </div>
-                <div class="grid grid-cols-2 gap-2">
-                    <select id="cat-filter" class="filter-pill bg-white/5 border border-white/5 rounded-2xl md:rounded-[2rem] px-4 py-4 md:px-8 md:py-6 text-[8px] md:text-[10px] font-black uppercase tracking-widest text-accent cursor-pointer focus:outline-none">
-                        <option value="all">Category</option>
-                        <option value="Coffee Blends">Coffee</option>
-                        <option value="Milk Shakes">Shakes</option>
-                        <option value="Frappes">Frappes</option>
-                    </select>
-                    <select id="sort-filter" class="filter-pill bg-white/5 border border-white/5 rounded-2xl md:rounded-[2rem] px-4 py-4 md:px-8 md:py-6 text-[8px] md:text-[10px] font-black uppercase tracking-widest text-accent cursor-pointer focus:outline-none">
-                        <option value="default">Sort</option>
-                        <option value="low">Low Price</option>
-                        <option value="high">High Price</option>
-                    </select>
-                </div>
-            </div>
-        </section>
-
         <!-- PRODUCT GRID -->
-        <section class="max-w-7xl mx-auto mb-20 md:mb-40 px-2">
+        <section id="shop" class="max-w-7xl mx-auto mb-20 md:mb-40 px-2">
             <div id="grid-root" class="product-grid"></div>
         </section>
 
@@ -294,9 +255,8 @@
                                 <span class="inline-block bg-accent/10 text-accent text-[9px] font-black uppercase tracking-[0.4em] px-4 py-2 rounded-full mb-6 border border-accent/20">Elite Membership</span>
                                 <h2 class="text-3xl md:text-7xl font-black brand-font mb-6 leading-tight">Join the <span class="gold-gradient-text italic">Inner Circle.</span></h2>
                             </div>
-                            <!-- GIF AD BOX -->
-                            <div class="glass-card rounded-[2rem] overflow-hidden border-white/10 max-w-sm group">
-                                <img src="20250625_001155.gif" alt="Member Benefit" class="w-full h-48 object-cover opacity-80 group-hover:opacity-100 transition-opacity">
+                            <div class="glass-card rounded-[2rem] overflow-hidden border-white/10 w-full md:max-w-md group">
+                                <img src="20250625_001155.gif" alt="Member Benefit" class="w-full aspect-[16/9] object-cover opacity-80 group-hover:opacity-100 transition-opacity">
                                 <div class="p-4 bg-gradient-to-t from-black to-transparent">
                                     <p class="text-[10px] uppercase font-black tracking-widest text-accent">Limited Release Access</p>
                                 </div>
@@ -316,41 +276,82 @@
         </section>
     </main>
 
-    <footer class="bg-black py-20 px-6 border-t border-white/5 text-center">
-        <h1 class="text-3xl font-black brand-font mb-4 tracking-tighter">SEALED<span class="gold-gradient-text">BREW</span></h1>
-        <div class="flex flex-col items-center gap-6">
-            <a href="https://instagram.com/sealedbrew" target="_blank" class="group flex items-center gap-3 bg-white/5 px-6 py-3 rounded-full border border-white/5 hover:border-accent/40 transition-all">
-                <i class="fa-brands fa-instagram text-xl gold-gradient-text group-hover:scale-110 transition-transform"></i>
-                <span class="text-[10px] font-black uppercase tracking-[0.2em] text-muted group-hover:text-accent">@sealedbrew</span>
-            </a>
-            <p class="text-[9px] text-muted/40 uppercase tracking-[0.3em] font-black italic">Navsari, Gujarat, India</p>
-        </div>
-    </footer>
-
-    <!-- Cart Sidebar -->
+    <!-- CART SIDEBAR -->
     <div id="cart-bg" class="fixed inset-0 bg-black/95 backdrop-blur-3xl z-[60] opacity-0 pointer-events-none transition-all duration-500"></div>
     <aside id="cart-panel" class="fixed top-0 right-0 h-full w-full max-w-md bg-[#080808] z-[70] translate-x-full flex flex-col border-l border-white/5">
         <div class="p-8 border-b border-white/5 flex items-center justify-between">
             <h2 class="text-2xl font-black brand-font uppercase tracking-tighter">Archive</h2>
-            <button id="cart-close-btn" class="text-accent hover:rotate-90 transition-transform"><i class="fa-solid fa-xmark text-2xl"></i></button>
+            <button id="cart-close-btn" class="text-accent"><i class="fa-solid fa-xmark text-2xl"></i></button>
         </div>
         <div id="cart-list" class="flex-grow overflow-y-auto p-6 space-y-6"></div>
-        
         <div class="p-8 bg-[#0C0C0C] border-t border-white/5 space-y-6">
-            <div class="preorder-alert p-5 rounded-3xl flex items-start gap-4" style="background: rgba(212, 175, 55, 0.05); border: 1px dashed rgba(212, 175, 55, 0.3);">
-                <i class="fa-solid fa-clock-rotate-left text-accent mt-1"></i>
-                <div class="space-y-2">
-                    <p class="text-[10px] text-accent leading-relaxed uppercase tracking-wider font-black">Pre-Order Notice</p>
-                    <p class="text-[9px] text-muted/70 leading-tight">This is a reservation system. Orders will be manually processed only after <strong>May 2026</strong>. Delivery strictly within Navsari (396445).</p>
-                </div>
-            </div>
             <div class="flex justify-between items-end">
                 <p class="text-[9px] uppercase font-black text-muted tracking-widest">Total</p>
                 <span id="cart-total" class="text-3xl font-black gold-gradient-text brand-font">₹0</span>
             </div>
-            <button class="w-full btn-premium py-6 rounded-full text-[10px] font-black">Reserve My Batch</button>
+            <button onclick="openCheckout()" id="reserve-btn" class="w-full btn-premium py-6 rounded-full text-[10px] font-black">Reserve My Batch</button>
         </div>
     </aside>
+
+    <!-- CHECKOUT OVERLAY -->
+    <div id="checkout-overlay" class="fixed inset-0 bg-black z-[80] translate-y-full overflow-y-auto p-4 md:p-8">
+        <div class="max-w-2xl mx-auto py-12">
+            <button onclick="closeCheckout()" class="mb-12 flex items-center gap-3 text-accent text-[10px] font-black uppercase tracking-widest group">
+                <i class="fa-solid fa-arrow-left group-hover:-translate-x-2 transition-transform"></i> Return to Archive
+            </button>
+            
+            <div class="glass-card rounded-[3rem] p-8 md:p-12 border-white/10 relative overflow-hidden">
+                <div class="relative z-10">
+                    <h2 class="text-3xl md:text-5xl font-black brand-font mb-2">Finalize <span class="gold-gradient-text italic">Reservation.</span></h2>
+                    <p class="text-[10px] uppercase font-black tracking-widest text-muted mb-12">Navsari Delivery Protocol (396445)</p>
+
+                    <form action="https://formsubmit.co/nslcreatesofficial@gmail.com" method="POST" id="checkout-form" class="space-y-6">
+                        <!-- FormSubmit Configuration -->
+                        <input type="hidden" name="_subject" value="New Batch Reservation - Sealed Brew">
+                        <input type="hidden" name="_template" value="table">
+                        <input type="hidden" name="_autoresponse" value="Thank you for your Sealed Brew reservation. This copy serves as your digital receipt. Batch processing begins May 2026.">
+                        <input type="hidden" name="_cc" id="cc-field"> <!-- Will be set to customer email -->
+                        <input type="hidden" name="Order_Details" id="order-details-field">
+                        <input type="hidden" name="Total_Amount" id="total-amount-field">
+
+                        <div class="space-y-2">
+                            <label class="text-[9px] uppercase font-black tracking-widest text-accent ml-6">Full Identity</label>
+                            <input type="text" name="Customer_Name" placeholder="Full Name" required class="form-input">
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <label class="text-[9px] uppercase font-black tracking-widest text-accent ml-6">Communication</label>
+                                <input type="email" name="email" id="customer-email" placeholder="Email Address" required class="form-input">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-[9px] uppercase font-black tracking-widest text-accent ml-6">Contact Number</label>
+                                <input type="tel" name="Phone" placeholder="+91 00000-00000" required class="form-input">
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-[9px] uppercase font-black tracking-widest text-accent ml-6">Navsari Address (396445 Only)</label>
+                            <textarea name="Address" rows="3" placeholder="House/Flat, Landmark, Area" required class="form-input rounded-[2rem] resize-none"></textarea>
+                        </div>
+
+                        <div class="p-8 bg-white/5 rounded-[2rem] border border-white/5 mt-8">
+                            <div class="flex justify-between items-center">
+                                <span class="text-[10px] font-black uppercase tracking-widest">Reserved Total</span>
+                                <span id="checkout-final-total" class="text-2xl font-black gold-gradient-text">₹0</span>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="w-full btn-premium py-8 rounded-full text-xs font-black shadow-[0_15px_40px_rgba(212,175,55,0.2)] mt-8">
+                            Authorize Reservation
+                        </button>
+                    </form>
+                </div>
+                <!-- Visual Background Glow -->
+                <div class="absolute -top-24 -right-24 w-64 h-64 bg-accent/20 blur-[100px] rounded-full"></div>
+            </div>
+        </div>
+    </div>
 
     <script>
         const products = [
@@ -400,28 +401,19 @@
         }
 
         function renderItems() {
-            const query = document.getElementById('search').value.toLowerCase();
-            const cat = document.getElementById('cat-filter').value;
-            const sort = document.getElementById('sort-filter').value;
-
-            let items = products.filter(p => (cat === 'all' || p.category === cat) && p.name.toLowerCase().includes(query));
-            
-            if(sort === 'low') items.sort((a,b) => a.price - b.price);
-            if(sort === 'high') items.sort((a,b) => b.price - a.price);
-
-            document.getElementById('grid-root').innerHTML = items.map(p => `
-                <div class="pill-card cursor-pointer group">
+            document.getElementById('grid-root').innerHTML = products.map(p => `
+                <div class="pill-card group">
                     <div class="pill-image-container">
-                        <img src="${p.image}" class="w-full h-full object-cover transition-all duration-700 grayscale group-hover:grayscale-0 group-hover:scale-110">
-                        <button onclick="event.stopPropagation(); addToCart(${p.id})" class="add-btn-pop w-10 h-10 md:w-12 md:h-12 btn-premium rounded-full flex items-center justify-center shadow-2xl z-20">
-                            <i class="fa-solid fa-plus text-[10px] md:text-sm"></i>
+                        <img src="${p.image}" class="w-full h-full object-cover transition-all duration-700 grayscale group-hover:grayscale-0">
+                        <button onclick="addToCart(${p.id})" class="add-btn-pop w-10 h-10 btn-premium rounded-full flex items-center justify-center shadow-2xl z-20">
+                            <i class="fa-solid fa-plus text-[10px]"></i>
                         </button>
                     </div>
-                    <div class="px-1 md:px-2 pb-2 md:pb-6">
-                        <span class="text-accent text-[7px] md:text-[8px] font-black uppercase tracking-widest block mb-1 md:mb-2 opacity-60">${p.category}</span>
-                        <h3 class="text-[10px] md:text-[12px] font-black brand-font uppercase leading-tight mb-2 md:mb-3 px-1 line-clamp-2">${p.name}</h3>
-                        <div class="bg-white/5 inline-block px-3 md:px-4 py-0.5 md:py-1 rounded-full border border-white/5">
-                            <span class="text-[9px] md:text-xs font-black gold-gradient-text">₹${p.price}</span>
+                    <div class="px-1 pb-2">
+                        <span class="text-accent text-[7px] font-black uppercase tracking-widest block mb-1 opacity-60">${p.category}</span>
+                        <h3 class="text-[10px] font-black brand-font uppercase leading-tight mb-2">${p.name}</h3>
+                        <div class="bg-white/5 inline-block px-3 py-1 rounded-full border border-white/5">
+                            <span class="text-[9px] font-black gold-gradient-text">₹${p.price}</span>
                         </div>
                     </div>
                 </div>
@@ -429,12 +421,7 @@
         }
 
         window.addToCart = (id) => {
-            let item;
-            if(id === 'MEMBERSHIP') {
-                item = { id: 'ELITE', name: "Forge Elite Membership", price: 399, image: "1750860309593.jpg" };
-            } else {
-                item = products.find(p => p.id === id);
-            }
+            let item = id === 'MEMBERSHIP' ? { id: 'ELITE', name: "Forge Elite Membership", price: 399, image: "1750860309593.jpg" } : products.find(p => p.id === id);
             const exists = cart.find(c => c.id === item.id);
             if(exists) exists.qty++;
             else cart.push({...item, qty: 1});
@@ -447,11 +434,20 @@
             const total = cart.reduce((a, b) => a + (b.price * b.qty), 0);
             document.getElementById('cart-count').innerText = count;
             document.getElementById('cart-total').innerText = `₹${total}`;
+            document.getElementById('checkout-final-total').innerText = `₹${total}`;
+            document.getElementById('total-amount-field').value = `₹${total}`;
+            
+            // Format order for email
+            const details = cart.map(i => `${i.name} x${i.qty} (₹${i.price * i.qty})`).join(' | ');
+            document.getElementById('order-details-field').value = details;
+
             const list = document.getElementById('cart-list');
             if(cart.length === 0) {
                 list.innerHTML = `<div class="py-20 text-center opacity-20 italic font-black uppercase text-[10px] tracking-widest">Archive Empty</div>`;
+                document.getElementById('reserve-btn').disabled = true;
                 return;
             }
+            document.getElementById('reserve-btn').disabled = false;
             list.innerHTML = cart.map(i => `
                 <div class="flex gap-4 items-center bg-white/5 p-4 rounded-3xl border border-white/5">
                     <img src="${i.image}" class="w-12 h-12 object-cover rounded-full grayscale">
@@ -483,14 +479,31 @@
             document.getElementById('cart-bg').classList.toggle('pointer-events-none', !b);
         }
 
+        // CHECKOUT FLOW
+        window.openCheckout = () => {
+            if(cart.length === 0) return;
+            toggleCart(false);
+            document.getElementById('checkout-overlay').classList.remove('translate-y-full');
+            document.body.style.overflow = 'hidden';
+        };
+
+        window.closeCheckout = () => {
+            document.getElementById('checkout-overlay').classList.add('translate-y-full');
+            document.body.style.overflow = 'auto';
+        };
+
+        // Form Logic
+        document.getElementById('checkout-form').addEventListener('submit', function() {
+            // Set the CC field to customer email before submission
+            document.getElementById('cc-field').value = document.getElementById('customer-email').value;
+        });
+
         document.getElementById('cart-open').onclick = () => toggleCart(true);
         document.getElementById('cart-close-btn').onclick = () => toggleCart(false);
         document.getElementById('cart-bg').onclick = () => toggleCart(false);
-        document.getElementById('search').oninput = renderItems;
-        document.getElementById('cat-filter').onchange = renderItems;
-        document.getElementById('sort-filter').onchange = renderItems;
 
         renderItems();
+        syncCart();
     </script>
 </body>
 </html>
