@@ -16,6 +16,7 @@
             --text-dark: #2D2D2D;
             --text-muted: #7A7A7A;
             --coffee-foam: #F5F0E6;
+            --elite-gold: #D4AF37;
         }
 
         body {
@@ -26,6 +27,11 @@
         }
 
         h1, h2, h3, h4, .brand-font { font-family: 'Playfair Display', serif; }
+
+        /* ELITE UI OVERRIDES */
+        .is-elite #user-btn { color: var(--elite-gold); filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.4)); }
+        .elite-badge { display: none; }
+        .is-elite .elite-badge { display: inline-block; background: var(--elite-gold); color: white; padding: 2px 8px; border-radius: 4px; font-size: 8px; vertical-align: middle; margin-left: 5px; }
 
         /* SOFT DRIP EFFECT */
         .glaze-container {
@@ -326,6 +332,7 @@
                 <div class="flex items-center gap-6">
                     <button id="user-btn" class="text-dark hover:text-peach transition-colors">
                         <i class="fa-solid fa-circle-user text-2xl"></i>
+                        <span class="elite-badge">ELITE</span>
                     </button>
                     <button id="cart-open" class="relative group">
                         <i class="fa-solid fa-shopping-bag text-2xl text-dark group-hover:text-peach transition-colors"></i>
@@ -344,7 +351,7 @@
                 VELVET.<br><span style="color: #E68A5E">FOAM.</span><br>PURE.
             </h2>
             <p class="text-zinc-400 text-lg md:text-2xl max-w-2xl mx-auto mb-16 font-medium leading-relaxed">
-                The Soft Cold Taste of Coffee  from us.
+                The Soft Cold Taste of Coffee from us.
             </p>
         </section>
 
@@ -450,6 +457,9 @@
         </div>
         <div id="cart-list" class="flex-grow overflow-y-auto p-8 space-y-8"></div>
         <div class="p-8 bg-zinc-50 space-y-6">
+            <div id="elite-saving-notice" class="hidden bg-yellow-50 p-4 rounded-2xl border border-yellow-100 mb-2">
+                <p class="text-[9px] font-black uppercase text-yellow-700 tracking-widest">Elite Member 10% Discount Applied</p>
+            </div>
             <div class="flex justify-between items-end">
                 <p class="text-[9px] uppercase font-black text-zinc-400 tracking-widest">Subtotal</p>
                 <span id="cart-total" class="text-3xl font-black brand-font">₹0</span>
@@ -524,6 +534,7 @@
 
         let cart = [];
         let user = null;
+        let userData = { role: 'standard' };
         let isSignup = false;
         let currentCategory = 'all';
         let searchQuery = '';
@@ -540,9 +551,21 @@
             e.preventDefault();
             const email = document.getElementById('auth-email').value;
             const pass = document.getElementById('auth-password').value;
+            const name = document.getElementById('auth-name').value;
             try {
-                if (isSignup) await createUserWithEmailAndPassword(auth, email, pass);
-                else await signInWithEmailAndPassword(auth, email, pass);
+                if (isSignup) {
+                    const cred = await createUserWithEmailAndPassword(auth, email, pass);
+                    // Create basic user profile in Firestore
+                    await setDoc(doc(db, "users", cred.user.uid), {
+                        uid: cred.user.uid,
+                        name: name || 'Guest',
+                        email: email,
+                        role: 'standard',
+                        createdAt: serverTimestamp()
+                    });
+                } else {
+                    await signInWithEmailAndPassword(auth, email, pass);
+                }
                 document.getElementById('auth-modal').style.display = 'none';
             } catch (err) { alert(err.message); }
         };
@@ -550,15 +573,32 @@
         onAuthStateChanged(auth, (u) => {
             user = u;
             if (u) {
+                // Listen to cart
                 onSnapshot(doc(db, "carts", u.uid), (snap) => {
                     if (snap.exists()) { cart = snap.data().items || []; syncCart(); }
                 });
-            } else { cart = []; syncCart(); }
+                // Listen to User Role
+                onSnapshot(doc(db, "users", u.uid), (snap) => {
+                    if (snap.exists()) { 
+                        userData = snap.data();
+                        document.body.classList.toggle('is-elite', userData.role === 'elite');
+                        document.getElementById('elite-saving-notice').classList.toggle('hidden', userData.role !== 'elite');
+                        renderItems(); 
+                        syncCart(); 
+                    }
+                });
+            } else { 
+                cart = []; 
+                userData = { role: 'standard' };
+                document.body.classList.remove('is-elite');
+                renderItems();
+                syncCart(); 
+            }
         });
 
         document.getElementById('user-btn').onclick = () => {
             if (user) { 
-                const action = confirm("Sealed Member recognized.\n\nPress OK to view Order History.\nPress Cancel to Sign Out.");
+                const action = confirm(`Sealed Member recognized.\nStatus: ${userData.role.toUpperCase()}\n\nPress OK to view Order History.\nPress Cancel to Sign Out.`);
                 if (action) viewOrders();
                 else if(confirm("Are you sure you want to sign out?")) signOut(auth);
             }
@@ -580,15 +620,23 @@
             document.body.classList.remove('overflow-hidden');
         }
 
+        // Calculation utility
+        const getPrice = (p) => {
+            if (userData.role === 'elite') return Math.floor(p * 0.9);
+            return p;
+        };
+
         function renderItems() {
-            let filtered = products;
+            let filtered = [...products];
             if (searchQuery) filtered = filtered.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
             if (currentCategory !== 'all') filtered = filtered.filter(p => p.category === currentCategory);
-            if (sortOrder === 'low') filtered.sort((a,b) => a.price - b.price);
-            if (sortOrder === 'high') filtered.sort((a,b) => b.price - a.price);
+            if (sortOrder === 'low') filtered.sort((a,b) => getPrice(a.price) - getPrice(b.price));
+            if (sortOrder === 'high') filtered.sort((a,b) => getPrice(b.price) - getPrice(a.price));
 
             const root = document.getElementById('grid-root');
-            root.innerHTML = filtered.map(p => `
+            root.innerHTML = filtered.map(p => {
+                const finalPrice = getPrice(p.price);
+                return `
                 <div class="pill-card group">
                     <div class="pill-image-container" style="background: ${p.color}50">
                         <img src="${p.image}" class="w-full h-full object-cover transition-all duration-700 opacity-90 group-hover:scale-110">
@@ -598,17 +646,26 @@
                         <span class="text-zinc-400 text-[8px] font-black uppercase tracking-widest block mb-2">${p.category}</span>
                         <h3 class="text-md font-black brand-font uppercase tracking-tight mb-2 text-zinc-800">${p.name}</h3>
                         <div class="inline-block px-5 py-2 rounded-full bg-zinc-50 border border-zinc-100">
-                            <span class="text-xs font-black text-zinc-600">₹${p.price}</span>
+                            <span class="text-xs font-black text-zinc-600">
+                                ${userData.role === 'elite' ? `<span class="line-through opacity-40 mr-2">₹${p.price}</span>` : ''}
+                                ₹${finalPrice}
+                            </span>
                         </div>
                     </div>
-                </div>`).join('');
+                </div>`}).join('');
         }
 
         window.addToCart = async (id) => {
             if (!user) { document.getElementById('auth-modal').style.display = 'flex'; return; }
-            let item = id === 'MEMBERSHIP' ? { id: 'ELITE', name: "Forge Elite Membership", price: 399, image: "1750860309593.jpg" } : products.find(p => p.id === id);
-            const exists = cart.find(c => c.id === item.id);
-            if(exists) exists.qty++; else cart.push({...item, qty: 1});
+            let itemData = id === 'MEMBERSHIP' ? { id: 'ELITE', name: "Forge Elite Membership", price: 399, image: "1750860309593.jpg" } : products.find(p => p.id === id);
+            
+            // If it's a standard product, apply Elite discount to the item being added
+            const finalPrice = (id === 'MEMBERSHIP' || userData.role !== 'elite') ? itemData.price : getPrice(itemData.price);
+            
+            const exists = cart.find(c => c.id === itemData.id);
+            if(exists) exists.qty++; 
+            else cart.push({...itemData, price: finalPrice, qty: 1});
+            
             await setDoc(doc(db, "carts", user.uid), { items: cart });
             toggleCart(true);
         };
@@ -646,9 +703,11 @@
             e.preventDefault();
             const orderData = {
                 userId: user.uid,
+                customerName: document.getElementById('ship-name').value,
                 items: cart,
                 total: cart.reduce((a, b) => a + (b.price * b.qty), 0),
-                timestamp: serverTimestamp()
+                timestamp: serverTimestamp(),
+                status: 'pending'
             };
             await addDoc(collection(db, "orders"), orderData);
             await setDoc(doc(db, "carts", user.uid), { items: [] });
