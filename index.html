@@ -206,6 +206,29 @@
             padding: 1.5rem;
         }
 
+        /* MEMBERSHIP AD STYLES */
+        .membership-ad-card {
+            background: white;
+            border-radius: 4rem;
+            overflow: hidden;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.03);
+        }
+
+        .gif-frame {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            overflow: hidden;
+            background: #f0f0f0;
+            border-radius: 3rem;
+        }
+
+        .gif-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: var(--accent-peach); border-radius: 10px; }
     </style>
@@ -344,22 +367,37 @@
             <div id="grid-root" class="product-grid"></div>
         </section>
 
-        <!-- MEMBERSHIP -->
+        <!-- NEW MEMBERSHIP SECTION -->
         <section id="membership" class="max-w-7xl mx-auto mb-52 px-6">
-            <div class="bg-white rounded-[4rem] p-1 shadow-2xl overflow-hidden border border-zinc-50">
-                <div class="bg-zinc-50/50 rounded-[3.8rem] p-8 md:p-24 flex flex-col md:flex-row items-center justify-between gap-12">
-                    <div class="max-w-lg">
-                        <span class="inline-block bg-white text-dark text-[9px] font-black uppercase tracking-[0.4em] px-6 py-2 rounded-full mb-6 shadow-sm">Club Access</span>
-                        <h2 class="text-4xl md:text-7xl font-black brand-font mb-6 leading-tight">Elite <span class="italic text-zinc-400">Membership.</span></h2>
-                        <p class="text-zinc-500 mb-8">Receive early-access drops and personal home-delivery protocol.</p>
-                    </div>
-                    <div class="bg-white p-12 rounded-[3.5rem] text-center shadow-xl border border-zinc-100 flex flex-col items-center min-w-[320px]">
-                        <div class="w-20 h-20 bg-lavender rounded-full flex items-center justify-center mb-6" style="background: var(--accent-lavender)">
-                            <i class="fa-solid fa-star text-3xl text-zinc-600"></i>
+            <div class="membership-ad-card p-6 md:p-12">
+                <div class="flex flex-col lg:flex-row gap-12 items-center">
+                    <!-- GIF Container -->
+                    <div class="w-full lg:w-3/5">
+                        <div class="gif-frame shadow-2xl">
+                            <img src="Yellow And Brown Bold Drink Menu Facebook Ad_20250625_000513_0001.gif" alt="Sealed Brew Membership Ad">
                         </div>
-                        <h3 class="text-2xl font-black brand-font mb-1 uppercase">Sealed Elite</h3>
-                        <span class="text-5xl font-black brand-font mb-10 block">₹399</span>
-                        <button onclick="addToCart('MEMBERSHIP')" class="btn-pastel w-full py-6 rounded-full text-xs shadow-lg">Join Now</button>
+                    </div>
+                    
+                    <!-- Content Container -->
+                    <div class="w-full lg:w-2/5 text-center lg:text-left space-y-8">
+                        <div>
+                            <span class="inline-block bg-zinc-100 text-dark text-[9px] font-black uppercase tracking-[0.4em] px-6 py-2 rounded-full mb-6">Elite Status</span>
+                            <h2 class="text-4xl md:text-6xl font-black brand-font mb-4">The Sealed <span class="italic text-zinc-300">Elite.</span></h2>
+                            <p class="text-zinc-500 text-lg leading-relaxed">Join the inner circle of Navsari's brew experimentalists. Early access, exclusive drops, and protocol insights.</p>
+                        </div>
+                        
+                        <div class="bg-zinc-50/50 p-8 rounded-[3rem] border border-zinc-100">
+                            <div class="flex items-center justify-between mb-8">
+                                <span class="text-zinc-400 font-black uppercase text-[10px] tracking-widest">Subscription Fee</span>
+                                <span class="text-4xl font-black brand-font text-dark">₹399</span>
+                            </div>
+                            <button onclick="addToCart('MEMBERSHIP')" class="btn-pastel w-full py-6 rounded-full text-xs shadow-lg">Become a Member</button>
+                        </div>
+                        
+                        <div class="flex items-center justify-center lg:justify-start gap-4 text-[9px] font-black uppercase tracking-widest text-zinc-300">
+                            <i class="fa-solid fa-shield-halved"></i>
+                            <span>Secure Verification Protocol</span>
+                        </div>
                     </div>
                 </div>
             </div>
