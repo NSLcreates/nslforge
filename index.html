@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -396,11 +397,25 @@
         </div>
     </div>
 
+    <!-- ORDERS HISTORY OVERLAY -->
+    <div id="orders-overlay" class="fixed inset-0 bg-white z-[400] translate-x-full overflow-y-auto p-4 md:p-8 transition-transform duration-700">
+        <div class="max-w-3xl mx-auto py-12">
+            <button onclick="closeOrders()" class="mb-12 flex items-center gap-3 text-zinc-400 text-[10px] font-black uppercase tracking-widest">
+                <i class="fa-solid fa-arrow-left"></i> Back to Archive
+            </button>
+            <h2 class="text-3xl md:text-5xl font-black brand-font mb-8">Order <span class="italic text-zinc-300">History.</span></h2>
+            <div id="orders-list" class="space-y-6">
+                <!-- Orders will be injected here -->
+                <p class="text-zinc-400 animate-pulse">Accessing Archive...</p>
+            </div>
+        </div>
+    </div>
+
     <!-- FIREBASE INTEGRATION -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, addDoc, collection, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, addDoc, collection, onSnapshot, serverTimestamp, query, where, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         // CONFIG
         const firebaseConfig = {
@@ -465,7 +480,14 @@
         });
 
         document.getElementById('user-btn').onclick = () => {
-            if (user) { if(confirm("Sign out?")) signOut(auth); }
+            if (user) { 
+                const choice = confirm("Open Order History? (Cancel to Sign Out)");
+                if (choice) {
+                    viewOrders();
+                } else {
+                    if(confirm("Sign out?")) signOut(auth);
+                }
+            }
             else { document.getElementById('auth-modal').style.display = 'flex'; }
         };
 
@@ -585,6 +607,59 @@
                 alert("Order Successful! Check your Firebase orders collection.");
                 location.reload();
             } catch (err) { alert(err.message); }
+        };
+
+        // VIEW ORDERS LOGIC
+        window.viewOrders = async () => {
+            const ordersList = document.getElementById('orders-list');
+            document.getElementById('orders-overlay').classList.remove('translate-x-full');
+            
+            try {
+                const q = query(
+                    collection(db, "orders"), 
+                    where("userId", "==", user.uid),
+                    orderBy("timestamp", "desc")
+                );
+                
+                const querySnapshot = await getDocs(q);
+                
+                if (querySnapshot.empty) {
+                    ordersList.innerHTML = `<div class="py-20 text-center opacity-40 uppercase text-xs font-black tracking-widest">No order history found.</div>`;
+                    return;
+                }
+
+                ordersList.innerHTML = querySnapshot.docs.map(doc => {
+                    const data = doc.data();
+                    const date = data.timestamp?.toDate().toLocaleDateString('en-IN', {
+                        day: 'numeric', month: 'short', year: 'numeric'
+                    }) || "Processing...";
+                    
+                    return `
+                        <div class="bg-zinc-50 rounded-[2.5rem] p-8 border border-zinc-100 shadow-sm">
+                            <div class="flex justify-between items-start mb-6">
+                                <div>
+                                    <p class="text-[9px] font-black text-zinc-400 uppercase tracking-[0.2em] mb-1">ID: ${doc.id.slice(0,8)}</p>
+                                    <h4 class="text-xl font-black brand-font text-zinc-800">${date}</h4>
+                                </div>
+                                <span class="bg-white px-6 py-2 rounded-full text-xs font-black shadow-sm border border-zinc-100">₹${data.total}</span>
+                            </div>
+                            <div class="space-y-3">
+                                ${data.items.map(i => `
+                                    <div class="flex justify-between items-center text-[11px] font-bold uppercase tracking-tight">
+                                        <span class="text-zinc-500">${i.qty}x ${i.name}</span>
+                                        <span class="text-zinc-400">₹${i.price * i.qty}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>`;
+                }).join('');
+            } catch (err) {
+                ordersList.innerHTML = `<p class="text-red-400 text-xs font-bold uppercase p-10 text-center">Protocol Error: ${err.message}</p>`;
+            }
+        };
+
+        window.closeOrders = () => {
+            document.getElementById('orders-overlay').classList.add('translate-x-full');
         };
 
         // TOOLBAR HANDLERS
