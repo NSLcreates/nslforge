@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -234,6 +233,16 @@
         </div>
     </div>
 
+    <!-- SUCCESS MODAL -->
+    <div id="success-modal" class="fixed inset-0 z-[500] bg-white hidden flex-col items-center justify-center p-6 text-center">
+        <div class="w-24 h-24 bg-teal-50 text-teal-500 rounded-full flex items-center justify-center mb-8 animate-bounce">
+            <i class="fa-solid fa-check text-4xl"></i>
+        </div>
+        <h2 class="text-4xl md:text-6xl font-black brand-font mb-4">Reservation <span class="italic text-zinc-300">Confirmed.</span></h2>
+        <p class="text-zinc-500 max-w-sm mb-12">Your batch has been locked into the archive. We will reach out to you via email shortly.</p>
+        <button onclick="location.reload()" class="btn-pastel px-12 py-6 rounded-full text-xs shadow-xl">Back to Archive</button>
+    </div>
+
     <!-- LEGAL GATEWAY -->
     <div id="legal-gateway">
         <div class="max-w-xl w-full p-10 soft-card rounded-[3rem] text-center">
@@ -397,7 +406,7 @@
         </div>
     </div>
 
-    <!-- ORDERS HISTORY OVERLAY -->
+    <!-- ORDERS OVERLAY -->
     <div id="orders-overlay" class="fixed inset-0 bg-white z-[400] translate-x-full overflow-y-auto p-4 md:p-8 transition-transform duration-700">
         <div class="max-w-3xl mx-auto py-12">
             <button onclick="closeOrders()" class="mb-12 flex items-center gap-3 text-zinc-400 text-[10px] font-black uppercase tracking-widest">
@@ -405,8 +414,8 @@
             </button>
             <h2 class="text-3xl md:text-5xl font-black brand-font mb-8">Order <span class="italic text-zinc-300">History.</span></h2>
             <div id="orders-list" class="space-y-6">
-                <!-- Orders will be injected here -->
-                <p class="text-zinc-400 animate-pulse">Accessing Archive...</p>
+                <!-- Orders will appear here -->
+                <p class="text-zinc-300 uppercase text-[10px] font-black tracking-widest animate-pulse">Scanning the protocol...</p>
             </div>
         </div>
     </div>
@@ -481,12 +490,9 @@
 
         document.getElementById('user-btn').onclick = () => {
             if (user) { 
-                const choice = confirm("Open Order History? (Cancel to Sign Out)");
-                if (choice) {
-                    viewOrders();
-                } else {
-                    if(confirm("Sign out?")) signOut(auth);
-                }
+                const action = confirm("Sealed Member recognized.\n\nPress OK to view Order History.\nPress Cancel to Sign Out.");
+                if (action) viewOrders();
+                else if(confirm("Are you sure you want to sign out?")) signOut(auth);
             }
             else { document.getElementById('auth-modal').style.display = 'flex'; }
         };
@@ -604,8 +610,8 @@
             try {
                 await addDoc(collection(db, "orders"), orderData);
                 await setDoc(doc(db, "carts", user.uid), { items: [] });
-                alert("Order Successful! Check your Firebase orders collection.");
-                location.reload();
+                document.getElementById('success-modal').classList.remove('hidden');
+                document.getElementById('success-modal').classList.add('flex');
             } catch (err) { alert(err.message); }
         };
 
@@ -624,7 +630,7 @@
                 const querySnapshot = await getDocs(q);
                 
                 if (querySnapshot.empty) {
-                    ordersList.innerHTML = `<div class="py-20 text-center opacity-40 uppercase text-xs font-black tracking-widest">No order history found.</div>`;
+                    ordersList.innerHTML = `<div class="py-24 text-center opacity-30 uppercase text-[10px] font-black tracking-[0.5em]">No reservations found.</div>`;
                     return;
                 }
 
@@ -632,35 +638,27 @@
                     const data = doc.data();
                     const date = data.timestamp?.toDate().toLocaleDateString('en-IN', {
                         day: 'numeric', month: 'short', year: 'numeric'
-                    }) || "Processing...";
-                    
+                    }) || "New Batch";
                     return `
                         <div class="bg-zinc-50 rounded-[2.5rem] p-8 border border-zinc-100 shadow-sm">
                             <div class="flex justify-between items-start mb-6">
                                 <div>
-                                    <p class="text-[9px] font-black text-zinc-400 uppercase tracking-[0.2em] mb-1">ID: ${doc.id.slice(0,8)}</p>
-                                    <h4 class="text-xl font-black brand-font text-zinc-800">${date}</h4>
+                                    <p class="text-[8px] font-black text-zinc-300 uppercase tracking-widest mb-1">REF: ${doc.id.slice(0,8)}</p>
+                                    <h4 class="text-xl font-black brand-font">${date}</h4>
                                 </div>
-                                <span class="bg-white px-6 py-2 rounded-full text-xs font-black shadow-sm border border-zinc-100">₹${data.total}</span>
+                                <span class="bg-white px-5 py-2 rounded-full text-[10px] font-black shadow-sm">₹${data.total}</span>
                             </div>
-                            <div class="space-y-3">
-                                ${data.items.map(i => `
-                                    <div class="flex justify-between items-center text-[11px] font-bold uppercase tracking-tight">
-                                        <span class="text-zinc-500">${i.qty}x ${i.name}</span>
-                                        <span class="text-zinc-400">₹${i.price * i.qty}</span>
-                                    </div>
-                                `).join('')}
+                            <div class="space-y-2">
+                                ${data.items.map(i => `<div class="text-[11px] font-bold text-zinc-500 uppercase">${i.qty}x ${i.name}</div>`).join('')}
                             </div>
                         </div>`;
                 }).join('');
             } catch (err) {
-                ordersList.innerHTML = `<p class="text-red-400 text-xs font-bold uppercase p-10 text-center">Protocol Error: ${err.message}</p>`;
+                ordersList.innerHTML = `<div class="p-10 text-center text-xs text-red-400 font-bold uppercase tracking-widest">Protocol Sync Error.</div>`;
             }
         };
 
-        window.closeOrders = () => {
-            document.getElementById('orders-overlay').classList.add('translate-x-full');
-        };
+        window.closeOrders = () => document.getElementById('orders-overlay').classList.add('translate-x-full');
 
         // TOOLBAR HANDLERS
         document.getElementById('product-search').oninput = (e) => { searchQuery = e.target.value; renderItems(); };
