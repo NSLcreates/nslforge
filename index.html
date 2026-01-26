@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sealed Brew | Pastel Collection</title>
+    <title>Sealed Brew | Official Archive</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&display=swap" rel="stylesheet">
@@ -11,525 +11,217 @@
         :root {
             --bg-main: #FDFCF8;
             --accent-peach: #FFD8CC;
-            --accent-mint: #E0F2F1;
-            --accent-lavender: #F3E5F5;
             --text-dark: #2D2D2D;
-            --text-muted: #7A7A7A;
             --coffee-foam: #F5F0E6;
         }
-
-        body {
-            background-color: var(--bg-main);
-            color: var(--text-dark);
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            overflow-x: hidden;
-        }
-
-        h1, h2, h3, h4, .brand-font { font-family: 'Playfair Display', serif; }
-
-        /* SOFT DRIP EFFECT */
-        .glaze-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 400px;
-            z-index: 5;
-            pointer-events: none;
-        }
-
-        .drip-svg {
-            width: 100%;
-            height: 100%;
-            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.05));
-        }
-
-        /* LEGAL GATEWAY */
-        #legal-gateway {
-            position: fixed;
-            inset: 0;
-            z-index: 1000;
-            background: var(--bg-main);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1.5rem;
-        }
-
-        #legal-gateway.hidden-gate {
-            opacity: 0;
-            pointer-events: none;
-            transform: translateY(-100%);
-            transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
-        }
-
-        .soft-card {
-            background: white;
-            border: 1px solid rgba(0,0,0,0.05);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.03);
-        }
-
-        .btn-pastel {
-            background: var(--text-dark);
-            color: white;
-            font-weight: 800;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-        }
-
-        .btn-pastel:hover:not(:disabled) { 
-            background: var(--accent-peach);
-            color: var(--text-dark);
-            transform: translateY(-2px);
-        }
-
-        /* STICKER */
-        .badge-sticker {
-            background: var(--accent-peach);
-            color: var(--text-dark);
-            padding: 10px 24px;
-            border-radius: 100px;
-            font-size: 11px;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            display: inline-block;
-            transform: rotate(-2deg);
-            box-shadow: 5px 5px 0px var(--text-dark);
-            margin-bottom: 32px;
-        }
-
-        /* PRODUCT GRID */
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr); 
-            gap: 1.5rem;
-        }
-
-        @media (min-width: 768px) {
-            .product-grid {
-                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-                gap: 3rem;
-            }
-        }
-
-        .pill-card {
-            border-radius: 50px;
-            padding: 1.25rem;
-            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-            background: white;
-            border: 1px solid rgba(0,0,0,0.04);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-        }
-
-        .pill-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.05);
-            border-color: var(--accent-peach);
-        }
-
-        .pill-image-container {
-            width: 100%;
-            aspect-ratio: 1/1;
-            border-radius: 40px;
-            overflow: hidden;
-            margin-bottom: 1.5rem;
-            position: relative;
-            background: var(--coffee-foam);
-        }
-
-        .add-btn-pop {
-            position: absolute;
-            bottom: 15px;
-            right: 15px;
-            width: 48px;
-            height: 48px;
-            background: var(--text-dark);
-            color: white;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .pill-card:hover .add-btn-pop {
-            background: var(--accent-peach);
-            color: var(--text-dark);
-            transform: scale(1.1) rotate(90deg);
-        }
-
-        /* SEARCH & FILTER UI */
-        .filter-pill {
-            padding: 8px 20px;
-            border-radius: 100px;
-            font-size: 10px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            background: white;
-            border: 1px solid rgba(0,0,0,0.05);
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        .filter-pill.active {
-            background: var(--text-dark);
-            color: white;
-        }
-
-        .form-input {
-            background: white;
-            border: 1px solid rgba(0,0,0,0.1);
-            color: var(--text-dark);
-            border-radius: 9999px;
-            padding: 1rem 1.5rem;
-            width: 100%;
-            outline: none;
-        }
-
-        .form-input:focus { border-color: var(--accent-peach); }
-
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: var(--accent-peach); border-radius: 10px; }
+        body { background-color: var(--bg-main); color: var(--text-dark); font-family: 'Plus Jakarta Sans', sans-serif; }
+        h1, h2, h3, .brand-font { font-family: 'Playfair Display', serif; }
+        
+        .soft-card { background: white; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 20px 40px rgba(0,0,0,0.03); }
+        .btn-pastel { background: var(--text-dark); color: white; font-weight: 800; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 0.1em; }
+        .btn-pastel:hover:not(:disabled) { background: var(--accent-peach); color: var(--text-dark); }
+        
+        #auth-modal { position: fixed; inset: 0; background: rgba(255,255,255,0.85); backdrop-filter: blur(12px); z-index: 2000; display: none; align-items: center; justify-content: center; }
+        .pill-card { border-radius: 40px; padding: 1.5rem; background: white; border: 1px solid rgba(0,0,0,0.04); text-align: center; }
+        .pill-img { width: 100%; aspect-ratio: 1/1; border-radius: 30px; object-fit: cover; margin-bottom: 1rem; background: var(--coffee-foam); }
+        
+        #cart-panel { position: fixed; top: 0; right: 0; h: 100%; width: 100%; max-width: 400px; background: white; z-index: 2100; transform: translateX(100%); transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: -10px 0 30px rgba(0,0,0,0.05); }
     </style>
 </head>
-<body class="antialiased overflow-hidden">
+<body>
 
-    <!-- LEGAL GATEWAY -->
-    <div id="legal-gateway">
-        <div class="max-w-xl w-full p-10 soft-card rounded-[3rem] text-center">
-            <h1 class="text-4xl md:text-5xl font-black brand-font mb-2 tracking-tighter">SEALED<span style="color: #E68A5E">BREW</span></h1>
-            <p class="text-[10px] text-muted uppercase tracking-[0.5em] mb-12 font-black">Archive Access Protocol</p>
-            
-            <div id="terms-box" class="hidden mb-8 text-left bg-zinc-50 p-8 rounded-[2rem] max-h-72 overflow-y-auto text-sm text-zinc-500 leading-relaxed">
-                <h3 class="font-black brand-font text-xl mb-4 text-dark">Forge Terms</h3>
-                <div class="space-y-4">
-                    <p><strong>1. Pre-Order:</strong> Processing starts May 2026.</p>
-                    <p><strong>2. Experimental:</strong> This is a youth-led experimental project by a team of 15 and 16-year-old innovators from Navsari.</p>
-                    <p><strong>3. Navsari Local:</strong> Shipping limited to 396445.</p>
-                    <p><strong>4. Purpose:</strong> Designed for learning and testing high-extraction brew protocols.</p>
+    <!-- AUTH MODAL -->
+    <div id="auth-modal">
+        <div class="max-w-md w-full p-10 soft-card rounded-[3rem]">
+            <div class="flex justify-between mb-8">
+                <h2 id="auth-title" class="text-2xl font-black brand-font uppercase">Member Login</h2>
+                <button onclick="document.getElementById('auth-modal').style.display='none'"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="auth-form" class="space-y-4">
+                <div id="signup-fields" class="hidden">
+                    <input type="text" id="auth-name" placeholder="FULL NAME" class="w-full p-4 rounded-full border border-zinc-100 outline-none text-xs font-bold">
                 </div>
-            </div>
-
-            <button id="toggle-terms" class="text-zinc-400 text-[11px] uppercase font-black tracking-widest mb-10 block w-full hover:text-dark">
-                <i class="fa-solid fa-scroll mr-2"></i>Terms of Service
+                <input type="email" id="auth-email" placeholder="EMAIL" required class="w-full p-4 rounded-full border border-zinc-100 outline-none text-xs font-bold">
+                <input type="password" id="auth-password" placeholder="PASSWORD" required class="w-full p-4 rounded-full border border-zinc-100 outline-none text-xs font-bold">
+                <button type="submit" class="btn-pastel w-full py-5 rounded-full text-xs mt-4">Continue</button>
+            </form>
+            <button onclick="toggleAuth()" id="auth-toggle-btn" class="w-full text-center mt-6 text-[10px] font-black text-zinc-400 uppercase tracking-widest">
+                Create an account
             </button>
-
-            <div class="flex flex-col gap-6 items-center">
-                <label class="flex items-center gap-4 cursor-pointer">
-                    <input type="checkbox" id="gate-check" class="w-6 h-6 rounded border-zinc-200 accent-peach">
-                    <span class="text-[11px] uppercase tracking-widest font-black text-zinc-400">I accept the brew conditions</span>
-                </label>
-                <button id="enter-forge" disabled class="btn-pastel w-full md:w-auto px-16 py-6 rounded-full text-xs">Enter Collection</button>
-            </div>
         </div>
-    </div>
-
-    <!-- SOFT DRIP CONTAINER -->
-    <div class="glaze-container">
-        <svg class="drip-svg" viewBox="0 0 1440 320" preserveAspectRatio="none">
-            <path fill="var(--coffee-foam)" d="M0,224L48,202.7C96,181,192,139,288,144C384,149,480,203,576,197.3C672,192,768,128,864,117.3C960,107,1056,149,1152,149.3C1248,149,1344,107,1392,85.3L1440,64L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z"></path>
-            <path fill="var(--accent-peach)" d="M0,160L60,144C120,128,240,96,360,112C480,128,600,192,720,192C840,192,960,128,1080,96C1200,64,1320,64,1380,64L1440,64L1440,0L1380,0C1320,0,1200,0,1080,0C960,0,840,0,720,0C600,0,480,0,360,0C240,0,120,0,60,0L0,0Z"></path>
-        </svg>
     </div>
 
     <!-- HEADER -->
-    <header class="fixed top-0 left-0 w-full z-[100] px-6 py-8" id="main-nav">
-        <div class="max-w-7xl mx-auto flex items-center justify-between">
-            <div class="text-2xl font-black brand-font tracking-tighter">
-                <span style="color: #E68A5E">SEALED</span><span>BREW</span>
-            </div>
-            <div class="flex items-center gap-6 md:gap-10">
-                <nav class="hidden lg:flex gap-12 text-[10px] uppercase font-black tracking-[0.3em] text-zinc-400">
-                    <a href="#shop" class="hover:text-dark transition-all">Archive</a>
-                    <a href="#membership" class="hover:text-dark transition-all">Elite</a>
-                </nav>
-                <button id="cart-open" class="relative group">
-                    <i class="fa-solid fa-shopping-bag text-2xl text-dark group-hover:text-peach transition-colors"></i>
-                    <span id="cart-count" class="absolute -top-2 -right-2 bg-dark text-white text-[9px] font-black w-5 h-5 flex items-center justify-center rounded-full">0</span>
-                </button>
-            </div>
+    <header class="fixed top-0 w-full z-50 p-8 flex justify-between items-center bg-white/50 backdrop-blur-md">
+        <div class="text-2xl font-black brand-font"><span style="color: #E68A5E">SEALED</span>BREW</div>
+        <div class="flex gap-6 items-center">
+            <button id="user-btn" class="flex items-center gap-2">
+                <i class="fa-solid fa-user-circle text-2xl"></i>
+                <span id="user-label" class="text-[10px] font-black uppercase">Login</span>
+            </button>
+            <button id="cart-btn" class="relative">
+                <i class="fa-solid fa-bag-shopping text-2xl"></i>
+                <span id="cart-count" class="absolute -top-2 -right-2 bg-black text-white text-[9px] w-5 h-5 flex items-center justify-center rounded-full">0</span>
+            </button>
         </div>
     </header>
 
-    <main class="relative z-10 pt-48 pb-10">
-        <!-- Hero Section -->
-        <section class="max-w-6xl mx-auto text-center px-6 mb-32">
-            <div class="badge-sticker">New Spring Batch</div>
-            <h2 class="text-6xl md:text-[130px] font-black brand-font mb-8 leading-[0.8] tracking-tighter text-zinc-900">
-                VELVET.<br><span style="color: #E68A5E">FOAM.</span><br>PURE.
-            </h2>
-            <p class="text-zinc-400 text-lg md:text-2xl max-w-2xl mx-auto mb-16 font-medium leading-relaxed">
-                The softest extraction ever developed. 18-hour cold brew, filtered through silk.
-            </p>
-        </section>
+    <main class="pt-40 px-8 max-w-7xl mx-auto pb-20">
+        <div class="mb-16">
+            <h1 class="text-7xl font-black brand-font leading-tight mb-4">THE<br><span style="color: #E68A5E">PASTEL</span><br>ARCHIVE</h1>
+            <p class="text-xs font-bold uppercase tracking-[0.3em] text-zinc-400">Exclusive Coffee Blends</p>
+        </div>
 
-        <!-- PRODUCT TOOLBAR -->
-        <section id="shop" class="max-w-7xl mx-auto px-6 mb-20">
-            <div class="bg-white p-8 rounded-[3rem] shadow-sm border border-zinc-100 mb-12 flex flex-col md:flex-row gap-6 items-center justify-between">
-                <!-- Search -->
-                <div class="relative w-full md:w-80">
-                    <i class="fa-solid fa-magnifying-glass absolute left-6 top-1/2 -translate-y-1/2 text-zinc-300"></i>
-                    <input type="text" id="product-search" placeholder="Search the archive..." class="form-input pl-14 text-xs font-bold uppercase tracking-widest">
-                </div>
-                <!-- Categories -->
-                <div class="flex flex-wrap justify-center gap-3" id="category-filters">
-                    <button class="filter-pill active" data-cat="all">All</button>
-                    <button class="filter-pill" data-cat="Silky Blends">Silky</button>
-                    <button class="filter-pill" data-cat="Fruity Cold">Fruity</button>
-                    <button class="filter-pill" data-cat="Classic">Classic</button>
-                    <button class="filter-pill" data-cat="Cloud Series">Cloud</button>
-                </div>
-                <!-- Sort -->
-                <select id="price-sort" class="form-input w-full md:w-48 text-xs font-bold uppercase tracking-widest cursor-pointer bg-zinc-50">
-                    <option value="none">Sort By Price</option>
-                    <option value="low">Low to High</option>
-                    <option value="high">High to Low</option>
-                </select>
-            </div>
-
-            <div id="grid-root" class="product-grid"></div>
-        </section>
-
-        <!-- MEMBERSHIP -->
-        <section id="membership" class="max-w-7xl mx-auto mb-52 px-6">
-            <div class="bg-white rounded-[4rem] p-1 shadow-2xl overflow-hidden border border-zinc-50">
-                <div class="bg-zinc-50/50 rounded-[3.8rem] p-8 md:p-24 flex flex-col md:flex-row items-center justify-between gap-12">
-                    <div class="max-w-lg">
-                        <span class="inline-block bg-white text-dark text-[9px] font-black uppercase tracking-[0.4em] px-6 py-2 rounded-full mb-6 shadow-sm">Club Access</span>
-                        <h2 class="text-4xl md:text-7xl font-black brand-font mb-6 leading-tight">Elite <span class="italic text-zinc-400">Membership.</span></h2>
-                        <p class="text-zinc-500 mb-8">Receive early-access drops and personal home-delivery protocol.</p>
-                    </div>
-                    <div class="bg-white p-12 rounded-[3.5rem] text-center shadow-xl border border-zinc-100 flex flex-col items-center min-w-[320px]">
-                        <div class="w-20 h-20 bg-lavender rounded-full flex items-center justify-center mb-6" style="background: var(--accent-lavender)">
-                            <i class="fa-solid fa-star text-3xl text-zinc-600"></i>
-                        </div>
-                        <h3 class="text-2xl font-black brand-font mb-1 uppercase">Sealed Elite</h3>
-                        <span class="text-5xl font-black brand-font mb-10 block">₹399</span>
-                        <button onclick="addToCart('MEMBERSHIP')" class="btn-pastel w-full py-6 rounded-full text-xs shadow-lg">Join Now</button>
-                    </div>
-                </div>
-            </div>
-        </section>
+        <div id="product-grid" class="grid grid-cols-1 md:grid-cols-3 gap-10">
+            <!-- Products injected here -->
+        </div>
     </main>
 
-    <!-- CART SIDEBAR -->
-    <div id="cart-bg" class="fixed inset-0 bg-white/80 backdrop-blur-xl z-[200] opacity-0 pointer-events-none transition-all duration-500"></div>
-    <aside id="cart-panel" class="fixed top-0 right-0 h-full w-full max-w-md bg-white z-[210] translate-x-full flex flex-col shadow-2xl transition-transform duration-500">
-        <div class="p-8 border-b border-zinc-50 flex items-center justify-between">
-            <h2 class="text-2xl font-black brand-font uppercase tracking-tighter">Your Bag</h2>
-            <button id="cart-close-btn" class="text-zinc-400 hover:text-dark"><i class="fa-solid fa-xmark text-2xl"></i></button>
+    <!-- CART PANEL -->
+    <aside id="cart-panel" class="flex flex-col">
+        <div class="p-8 border-b flex justify-between items-center">
+            <h2 class="text-xl font-black brand-font uppercase">Your Bag</h2>
+            <button onclick="document.getElementById('cart-panel').style.transform='translateX(100%)'"><i class="fa-solid fa-xmark text-xl"></i></button>
         </div>
-        <div id="cart-list" class="flex-grow overflow-y-auto p-8 space-y-8"></div>
-        <div class="p-8 bg-zinc-50 space-y-6">
-            <div class="flex justify-between items-end">
-                <p class="text-[9px] uppercase font-black text-zinc-400 tracking-widest">Subtotal</p>
-                <span id="cart-total" class="text-3xl font-black brand-font">₹0</span>
+        <div id="cart-items" class="p-8 flex-grow overflow-y-auto space-y-4"></div>
+        <div class="p-8 bg-zinc-50 border-t">
+            <div class="flex justify-between mb-4">
+                <span class="text-[10px] font-black uppercase text-zinc-400">Total Amount</span>
+                <span id="cart-total" class="font-black text-xl">₹0</span>
             </div>
-            <button onclick="openCheckout()" id="reserve-btn" class="w-full btn-pastel py-7 rounded-full text-xs shadow-lg">Proceed to Reservation</button>
+            <button id="checkout-btn" class="w-full btn-pastel py-6 rounded-full text-xs">Confirm Order</button>
         </div>
     </aside>
 
-    <!-- CHECKOUT OVERLAY -->
-    <div id="checkout-overlay" class="fixed inset-0 bg-zinc-50 z-[300] translate-y-full overflow-y-auto p-4 md:p-8 transition-transform duration-700">
-        <div class="max-w-2xl mx-auto py-12">
-            <button onclick="closeCheckout()" class="mb-12 flex items-center gap-3 text-zinc-400 text-[10px] font-black uppercase tracking-widest">
-                <i class="fa-solid fa-arrow-left"></i> Back to Archive
-            </button>
-            <div class="bg-white rounded-[3rem] p-8 md:p-14 shadow-2xl relative overflow-hidden">
-                <h2 class="text-3xl md:text-5xl font-black brand-font mb-2">Finalize <span class="italic text-zinc-300">Order.</span></h2>
-                <p class="text-[10px] uppercase font-black tracking-widest text-zinc-400 mb-12">Delivery restricted to Navsari</p>
-                
-                <form action="https://formsubmit.co/nslcreatesofficial@gmail.com" method="POST" id="checkout-form" class="space-y-6">
-                    <input type="hidden" name="Order_Summary" id="order-details-field">
-                    <input type="hidden" name="Total_Price" id="total-amount-field">
-                    <div class="space-y-4">
-                        <input type="text" name="Name" placeholder="Recipient Name" required class="form-input">
-                        <input type="email" name="Email" placeholder="Email Address" required class="form-input">
-                        <input type="tel" name="Phone" placeholder="Mobile Number" required class="form-input">
-                        <textarea name="Address" rows="3" placeholder="Navsari 396445 Delivery Address" required class="form-input rounded-[2rem] resize-none"></textarea>
-                    </div>
-                    <button type="submit" class="w-full btn-pastel py-8 rounded-full text-xs shadow-xl mt-8">Confirm Reservation</button>
-                </form>
-            </div>
-        </div>
-    </div>
+    <!-- FIREBASE SYSTEM -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    <script>
+        // Your exact Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyAU1yekU2rDq5hZZN9Xlu1HzWx6BXlhesI",
+            authDomain: "sealed-brew.firebaseapp.com",
+            projectId: "sealed-brew",
+            storageBucket: "sealed-brew.firebasestorage.app",
+            messagingSenderId: "917026506534",
+            appId: "1:917026506534:web:adc1b9fe58ec041a03e3e7",
+            measurementId: "G-82ZXFL83H3"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+        let cart = [];
+        let isSignup = false;
+
         const products = [
-            { id: 1, name: "Velvet Caramel", category: "Silky Blends", price: 225, image: "1750860309593.jpg", color: "var(--accent-peach)" },
-            { id: 2, name: "Peach Infusion", category: "Fruity Cold", price: 205, image: "1749905964964.jpg", color: "var(--accent-mint)" },
-            { id: 3, name: "Minted Mocha", category: "Classic", price: 189, image: "1749905943104.jpg", color: "var(--accent-lavender)" },
-            { id: 4, name: "Silk Brownie", category: "Silky Blends", price: 180, image: "1750860309593.jpg", color: "var(--accent-peach)" },
-            { id: 5, name: "Vanilla Cloud", category: "Cloud Series", price: 131, image: "1749905943104.jpg", color: "var(--accent-mint)" },
-            { id: 6, name: "Pure Matcha Brew", category: "Classic", price: 120, image: "1749905957623.jpg", color: "var(--accent-lavender)" },
-            { id: 7, name: "Creamy Hazelnut", category: "Silky Blends", price: 120, image: "1749905964964.jpg", color: "var(--accent-peach)" },
-            { id: 8, name: "Petal Espresso", category: "Classic", price: 109, image: "1749905951985.jpg", color: "var(--accent-mint)" }
+            { id: 1, name: "Velvet Caramel", price: 225, img: "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?q=80&w=500&auto=format&fit=crop" },
+            { id: 2, name: "Peach Infusion", price: 205, img: "https://images.unsplash.com/photo-1544413647-b5104914d3db?q=80&w=500&auto=format&fit=crop" },
+            { id: 3, name: "Minted Mocha", price: 189, img: "https://images.unsplash.com/photo-1572442388796-11668a67e53d?q=80&w=500&auto=format&fit=crop" }
         ];
 
-        let cart = [];
-        let currentCategory = 'all';
-        let searchQuery = '';
-        let sortOrder = 'none';
-
-        // GATEWAY
-        const gateCheck = document.getElementById('gate-check');
-        const enterBtn = document.getElementById('enter-forge');
-        const termsToggle = document.getElementById('toggle-terms');
-
-        termsToggle.onclick = () => document.getElementById('terms-box').classList.toggle('hidden');
-        gateCheck.onchange = () => enterBtn.disabled = !gateCheck.checked;
-        enterBtn.onclick = () => {
-            document.getElementById('legal-gateway').classList.add('hidden-gate');
-            document.body.classList.remove('overflow-hidden');
-            sessionStorage.setItem('gate-cleared', 'true');
+        // Auth Functions
+        window.toggleAuth = () => {
+            isSignup = !isSignup;
+            document.getElementById('auth-title').innerText = isSignup ? 'Sign Up' : 'Member Login';
+            document.getElementById('signup-fields').classList.toggle('hidden', !isSignup);
+            document.getElementById('auth-toggle-btn').innerText = isSignup ? 'Already have an account? Login' : 'Create an account';
         };
 
-        if(sessionStorage.getItem('gate-cleared')) {
-            document.getElementById('legal-gateway').style.display = 'none';
-            document.body.classList.remove('overflow-hidden');
-        }
-
-        // SHOP RENDERING & FILTERING
-        function getFilteredProducts() {
-            let filtered = products;
-
-            // Search
-            if (searchQuery) {
-                filtered = filtered.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()) || p.category.toLowerCase().includes(searchQuery.toLowerCase()));
-            }
-
-            // Category
-            if (currentCategory !== 'all') {
-                filtered = filtered.filter(p => p.category === currentCategory);
-            }
-
-            // Sort
-            if (sortOrder === 'low') {
-                filtered = [...filtered].sort((a, b) => a.price - b.price);
-            } else if (sortOrder === 'high') {
-                filtered = [...filtered].sort((a, b) => b.price - a.price);
-            }
-
-            return filtered;
-        }
-
-        function renderItems() {
-            const displayProducts = getFilteredProducts();
-            const root = document.getElementById('grid-root');
-            
-            if (displayProducts.length === 0) {
-                root.innerHTML = `<div class="col-span-full py-20 text-center text-zinc-300 font-black uppercase text-xs tracking-[0.5em]">No brews found</div>`;
-                return;
-            }
-
-            root.innerHTML = displayProducts.map(p => `
-                <div class="pill-card group">
-                    <div class="pill-image-container" style="background: ${p.color}50">
-                        <img src="${p.image}" class="w-full h-full object-cover transition-all duration-700 opacity-90 group-hover:scale-110">
-                        <button onclick="addToCart(${p.id})" class="add-btn-pop shadow-md">
-                            <i class="fa-solid fa-plus text-sm"></i>
-                        </button>
-                    </div>
-                    <div class="px-2 pb-2">
-                        <span class="text-zinc-400 text-[8px] font-black uppercase tracking-widest block mb-2">${p.category}</span>
-                        <h3 class="text-md font-black brand-font uppercase tracking-tight mb-2 text-zinc-800">${p.name}</h3>
-                        <div class="inline-block px-5 py-2 rounded-full bg-zinc-50 border border-zinc-100">
-                            <span class="text-xs font-black text-zinc-600">₹${p.price}</span>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // FILTER EVENT LISTENERS
-        document.getElementById('product-search').addEventListener('input', (e) => {
-            searchQuery = e.target.value;
-            renderItems();
-        });
-
-        document.getElementById('price-sort').addEventListener('change', (e) => {
-            sortOrder = e.target.value;
-            renderItems();
-        });
-
-        document.querySelectorAll('.filter-pill').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentCategory = btn.dataset.cat;
-                renderItems();
-            });
-        });
-
-        window.addToCart = (id) => {
-            let item = id === 'MEMBERSHIP' ? { id: 'ELITE', name: "Forge Elite Membership", price: 399, image: "1750860309593.jpg" } : products.find(p => p.id === id);
-            const exists = cart.find(c => c.id === item.id);
-            if(exists) exists.qty++;
-            else cart.push({...item, qty: 1});
-            syncCart();
-            toggleCart(true);
+        document.getElementById('auth-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('auth-email').value;
+            const pass = document.getElementById('auth-password').value;
+            try {
+                if (isSignup) {
+                    const res = await createUserWithEmailAndPassword(auth, email, pass);
+                    await setDoc(doc(db, "users", res.user.uid), { email, name: document.getElementById('auth-name').value });
+                } else {
+                    await signInWithEmailAndPassword(auth, email, pass);
+                }
+                document.getElementById('auth-modal').style.display = 'none';
+            } catch (err) { alert(err.message); }
         };
 
-        function syncCart() {
-            const count = cart.reduce((a, b) => a + b.qty, 0);
-            const total = cart.reduce((a, b) => a + (b.price * b.qty), 0);
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            document.getElementById('user-label').innerText = user ? 'Account' : 'Login';
+            if (user) {
+                // Listen to Cloud Cart
+                onSnapshot(doc(db, "carts", user.uid), (snap) => {
+                    if (snap.exists()) { cart = snap.data().items || []; renderCart(); }
+                });
+            } else {
+                cart = []; renderCart();
+            }
+        });
+
+        document.getElementById('user-btn').onclick = () => {
+            if (currentUser) { if(confirm("Sign out?")) signOut(auth); }
+            else { document.getElementById('auth-modal').style.display = 'flex'; }
+        };
+
+        // Cart Logic
+        window.addToCart = async (id) => {
+            if (!currentUser) { document.getElementById('auth-modal').style.display = 'flex'; return; }
+            const p = products.find(x => x.id === id);
+            const item = cart.find(x => x.id === id);
+            if (item) item.qty++; else cart.push({ ...p, qty: 1 });
+            await setDoc(doc(db, "carts", currentUser.uid), { items: cart });
+        };
+
+        window.updateQty = async (id, delta) => {
+            const item = cart.find(x => x.id === id);
+            if (item) {
+                item.qty += delta;
+                if (item.qty <= 0) cart = cart.filter(x => x.id !== id);
+                await setDoc(doc(db, "carts", currentUser.uid), { items: cart });
+            }
+        };
+
+        function renderCart() {
+            const container = document.getElementById('cart-items');
+            const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+            const count = cart.reduce((s, i) => s + i.qty, 0);
+
             document.getElementById('cart-count').innerText = count;
             document.getElementById('cart-total').innerText = `₹${total}`;
-            document.getElementById('total-amount-field').value = `₹${total}`;
-            document.getElementById('order-details-field').value = cart.map(i => `${i.name} (${i.qty})`).join(', ');
-
-            const list = document.getElementById('cart-list');
-            if(cart.length === 0) {
-                list.innerHTML = `<div class="py-20 text-center opacity-30 font-black uppercase text-xs tracking-widest">Nothing here yet</div>`;
-                document.getElementById('reserve-btn').disabled = true;
-                return;
-            }
-            document.getElementById('reserve-btn').disabled = false;
-            list.innerHTML = cart.map(i => `
-                <div class="flex gap-4 items-center bg-zinc-50 p-5 rounded-[30px]">
-                    <img src="${i.image}" class="w-14 h-14 object-cover rounded-2xl shadow-sm">
-                    <div class="flex-grow min-w-0">
-                        <h4 class="text-[10px] font-black uppercase truncate text-zinc-700">${i.name}</h4>
-                        <p class="text-zinc-400 text-xs font-bold mt-1">₹${i.price}</p>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <button onclick="qty('${i.id}', -1)" class="w-7 h-7 rounded-full bg-white border border-zinc-100 flex items-center justify-center">-</button>
+            
+            container.innerHTML = cart.length === 0 ? '<p class="text-center text-zinc-300 py-10 uppercase text-[10px] font-black">Bag is empty</p>' : 
+            cart.map(i => `
+                <div class="flex items-center gap-4 bg-zinc-50 p-4 rounded-3xl">
+                    <img src="${i.img}" class="w-12 h-12 rounded-xl object-cover">
+                    <div class="flex-grow font-black text-[10px] uppercase">${i.name}</div>
+                    <div class="flex items-center gap-3">
+                        <button onclick="updateQty(${i.id}, -1)" class="w-6 h-6 rounded-full bg-white border border-zinc-200">-</button>
                         <span class="text-xs font-black">${i.qty}</span>
-                        <button onclick="qty('${i.id}', 1)" class="w-7 h-7 rounded-full bg-white border border-zinc-100 flex items-center justify-center">+</button>
+                        <button onclick="updateQty(${i.id}, 1)" class="w-6 h-6 rounded-full bg-white border border-zinc-200">+</button>
                     </div>
                 </div>
             `).join('');
         }
 
-        window.qty = (id, d) => {
-            const i = cart.find(c => c.id == id);
-            if(i) {
-                i.qty += d;
-                if(i.qty <= 0) cart = cart.filter(c => c.id != id);
-                syncCart();
-            }
-        };
-
-        function toggleCart(b) {
-            document.getElementById('cart-panel').style.transform = b ? 'translateX(0)' : 'translateX(100%)';
-            document.getElementById('cart-bg').classList.toggle('opacity-0', !b);
-            document.getElementById('cart-bg').classList.toggle('pointer-events-none', !b);
+        // Shop UI
+        function renderShop() {
+            document.getElementById('product-grid').innerHTML = products.map(p => `
+                <div class="pill-card">
+                    <img src="${p.img}" class="pill-img">
+                    <h3 class="text-lg font-black brand-font mb-1">${p.name}</h3>
+                    <p class="text-[10px] font-black text-zinc-400 mb-4 uppercase tracking-widest">Premium Blend</p>
+                    <div class="flex justify-between items-center bg-zinc-50 p-4 rounded-2xl">
+                        <span class="font-black">₹${p.price}</span>
+                        <button onclick="addToCart(${p.id})" class="bg-black text-white px-6 py-2 rounded-full text-[10px] font-black uppercase">Add</button>
+                    </div>
+                </div>
+            `).join('');
         }
 
-        window.openCheckout = () => { toggleCart(false); document.getElementById('checkout-overlay').classList.remove('translate-y-full'); };
-        window.closeCheckout = () => document.getElementById('checkout-overlay').classList.add('translate-y-full');
-
-        document.getElementById('cart-open').onclick = () => toggleCart(true);
-        document.getElementById('cart-close-btn').onclick = () => toggleCart(false);
-        document.getElementById('cart-bg').onclick = () => toggleCart(false);
-
-        renderItems();
-        syncCart();
+        document.getElementById('cart-btn').onclick = () => document.getElementById('cart-panel').style.transform = 'translateX(0)';
+        renderShop();
     </script>
 </body>
 </html>
