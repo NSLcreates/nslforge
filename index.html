@@ -441,17 +441,34 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // DATA
+                // DATA
         const products = [
-            { id: 1, name: "Velvet Caramel", category: "Silky Blends", price: 225, image: "1750860309593.jpg", color: "var(--accent-peach)" },
-            { id: 2, name: "Peach Infusion", category: "Fruity Cold", price: 205, image: "1749905964964.jpg", color: "var(--accent-mint)" },
-            { id: 3, name: "Minted Mocha", category: "Classic", price: 189, image: "1749905943104.jpg", color: "var(--accent-lavender)" },
-            { id: 4, name: "Silk Brownie", category: "Silky Blends", price: 180, image: "1750860309593.jpg", color: "var(--accent-peach)" },
-            { id: 5, name: "Vanilla Cloud", category: "Cloud Series", price: 131, image: "1749905943104.jpg", color: "var(--accent-mint)" },
-            { id: 6, name: "Pure Matcha Brew", category: "Classic", price: 120, image: "1749905957623.jpg", color: "var(--accent-lavender)" },
-            { id: 7, name: "Creamy Hazelnut", category: "Silky Blends", price: 120, image: "1749905964964.jpg", color: "var(--accent-peach)" },
-            { id: 8, name: "Petal Espresso", category: "Classic", price: 109, image: "1749905951985.jpg", color: "var(--accent-mint)" }
+            // Coffee Blends
+            { id: 1, name: "Caramel Cold Coffee", category: "Silky Blends", price: 225, image: "1750860309593.jpg", color: "var(--accent-peach)" },
+            { id: 2, name: "Everyday Cold Coffee", category: "Classic", price: 205, image: "1749905964964.jpg", color: "var(--accent-mint)" },
+            { id: 3, name: "Brownie Blast Frappe", category: "Silky Blends", price: 189, image: "1749905943104.jpg", color: "var(--accent-lavender)" },
+            { id: 4, name: "Brownie Cold Coffee", category: "Silky Blends", price: 180, image: "1750860309593.jpg", color: "var(--accent-peach)" },
+            { id: 5, name: "Velvet Chocolate Reserve", category: "Cloud Series", price: 131, image: "1749905943104.jpg", color: "var(--accent-mint)" },
+            { id: 6, name: "Hazelnut Signature Blend", category: "Silky Blends", price: 120, image: "1749905957623.jpg", color: "var(--accent-lavender)" },
+            { id: 7, name: "Butterscotch Velvet Essence", category: "Silky Blends", price: 120, image: "1749905964964.jpg", color: "var(--accent-peach)" },
+            { id: 8, name: "Vanilla Creme Select", category: "Cloud Series", price: 109, image: "1749905951985.jpg", color: "var(--accent-mint)" },
+            { id: 9, name: "Classic Estate Brew", category: "Classic", price: 98, image: "1749905957623.jpg", color: "var(--accent-lavender)" },
+            
+            // Milk Shakes
+            { id: 10, name: "Kit Kat Blast Milk Shake", category: "Fruity Cold", price: 249, image: "1749905951985.jpg", color: "var(--accent-peach)" },
+            { id: 11, name: "Ferrero Rocher Shake", category: "Silky Blends", price: 249, image: "1750860309593.jpg", color: "var(--accent-mint)" },
+            { id: 12, name: "Strawberry Milk Shake", category: "Fruity Cold", price: 249, image: "1749905964964.jpg", color: "var(--accent-lavender)" },
+            { id: 13, name: "Brownie With Nutella Milk Shake", category: "Silky Blends", price: 249, image: "1749905943104.jpg", color: "var(--accent-peach)" },
+            { id: 14, name: "Snickers Shake", category: "Silky Blends", price: 240, image: "1750860309593.jpg", color: "var(--accent-mint)" },
+            { id: 15, name: "Oreo Blast Milk Shake", category: "Cloud Series", price: 189, image: "1749905957623.jpg", color: "var(--accent-lavender)" },
+            { id: 16, name: "Oreo Milk Shake", category: "Cloud Series", price: 180, image: "1749905964964.jpg", color: "var(--accent-peach)" },
+            { id: 17, name: "Chocolate Milk Shake", category: "Silky Blends", price: 149, image: "1749905951985.jpg", color: "var(--accent-mint)" },
+
+            // Frappes
+            { id: 18, name: "KitKat Frappe", category: "Cloud Series", price: 249, image: "1749905943104.jpg", color: "var(--accent-lavender)" },
+            { id: 19, name: "Brownie Blast Frappe", category: "Silky Blends", price: 189, image: "1750860309593.jpg", color: "var(--accent-peach)" }
         ];
+
 
         let cart = [];
         let user = null;
