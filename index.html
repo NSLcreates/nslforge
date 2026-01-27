@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sealed Brew | Archive</title>
+    <title>Sealed Brew | Pastel Collection</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&display=swap" rel="stylesheet">
@@ -16,40 +16,7 @@
             --text-dark: #2D2D2D;
             --text-muted: #7A7A7A;
             --coffee-foam: #F5F0E6;
-            --elite-gold: #C5A059;
-            --elite-dark: #1A1A1A;
-        }
-
-        /* PREMIUM ELITE MODE OVERRIDES */
-        body.is-elite {
-            background-color: #f8f8f8;
-            --text-dark: #121212;
-        }
-
-        body.is-elite #main-nav {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(197, 160, 89, 0.1);
-        }
-
-        body.is-elite .pill-card {
-            border: 1px solid rgba(197, 160, 89, 0.1);
-        }
-
-        body.is-elite .pill-card:hover {
-            border-color: var(--elite-gold);
-            box-shadow: 0 20px 40px rgba(197, 160, 89, 0.1);
-        }
-
-        body.is-elite .btn-pastel {
-            background: var(--elite-dark);
-            border: 1px solid var(--elite-gold);
-            color: var(--elite-gold);
-        }
-
-        body.is-elite .btn-pastel:hover {
-            background: var(--elite-gold);
-            color: white;
+            --elite-gold: #D4AF37;
         }
 
         body {
@@ -61,28 +28,10 @@
 
         h1, h2, h3, h4, .brand-font { font-family: 'Playfair Display', serif; }
 
-        /* ELITE UI ELEMENTS */
-        #user-btn { transition: all 0.3s ease; }
-        .is-elite #user-btn { color: var(--elite-gold); transform: scale(1.1); }
-        
+        /* ELITE UI OVERRIDES */
+        .is-elite #user-btn { color: var(--elite-gold); filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.4)); }
         .elite-badge { display: none; }
-        .is-elite .elite-badge { 
-            display: inline-block; 
-            background: linear-gradient(135deg, #C5A059 0%, #E2C58F 100%);
-            color: white; 
-            padding: 2px 10px; 
-            border-radius: 4px; 
-            font-size: 9px; 
-            font-weight: 800;
-            vertical-align: middle; 
-            margin-left: 8px;
-            box-shadow: 0 2px 5px rgba(197, 160, 89, 0.3);
-        }
-
-        /* Hide Membership Section if Elite */
-        .is-elite #membership-section {
-            display: none;
-        }
+        .is-elite .elite-badge { display: inline-block; background: var(--elite-gold); color: white; padding: 2px 8px; border-radius: 4px; font-size: 8px; vertical-align: middle; margin-left: 5px; }
 
         /* SOFT DRIP EFFECT */
         .glaze-container {
@@ -157,12 +106,6 @@
             margin-bottom: 32px;
         }
 
-        .is-elite .badge-sticker {
-            background: var(--elite-gold);
-            color: white;
-            box-shadow: 5px 5px 0px var(--elite-dark);
-        }
-
         /* PRODUCT GRID */
         .product-grid {
             display: grid;
@@ -183,10 +126,13 @@
             transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
             background: white;
             border: 1px solid rgba(0,0,0,0.04);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
+            display: flex; flex-direction: column; align-items: center; text-align: center;
+        }
+
+        .pill-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.05);
+            border-color: var(--accent-peach);
         }
 
         .pill-image-container {
@@ -214,17 +160,10 @@
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .is-elite .add-btn-pop { background: var(--elite-dark); }
-
         .pill-card:hover .add-btn-pop {
             background: var(--accent-peach);
             color: var(--text-dark);
             transform: scale(1.1) rotate(90deg);
-        }
-        
-        .is-elite .pill-card:hover .add-btn-pop {
-            background: var(--elite-gold);
-            color: white;
         }
 
         /* SEARCH & FILTER UI */
@@ -244,9 +183,6 @@
             background: var(--text-dark);
             color: white;
         }
-        .is-elite .filter-pill.active {
-            background: var(--elite-gold);
-        }
 
         .form-input {
             background: white;
@@ -257,6 +193,8 @@
             width: 100%;
             outline: none;
         }
+
+        .form-input:focus { border-color: var(--accent-peach); }
 
         /* AUTH MODAL */
         #auth-modal {
@@ -271,6 +209,7 @@
             padding: 1.5rem;
         }
 
+        /* MEMBERSHIP AD STYLES */
         .membership-ad-card {
             background: white;
             border-radius: 4rem;
@@ -293,9 +232,16 @@
             object-fit: cover;
         }
 
+        .footer-link {
+            transition: all 0.3s ease;
+        }
+        .footer-link:hover {
+            color: var(--accent-peach);
+            transform: translateY(-2px);
+        }
+
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: var(--accent-peach); border-radius: 10px; }
-        .is-elite ::-webkit-scrollbar-thumb { background: var(--elite-gold); }
     </style>
 </head>
 <body class="antialiased overflow-hidden">
@@ -365,7 +311,7 @@
     <div class="glaze-container">
         <svg class="drip-svg" viewBox="0 0 1440 320" preserveAspectRatio="none">
             <path fill="var(--coffee-foam)" d="M0,224L48,202.7C96,181,192,139,288,144C384,149,480,203,576,197.3C672,192,768,128,864,117.3C960,107,1056,149,1152,149.3C1248,149,1344,107,1392,85.3L1440,64L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z"></path>
-            <path id="drip-peach" fill="var(--accent-peach)" d="M0,160L60,144C120,128,240,96,360,112C480,128,600,192,720,192C840,192,960,128,1080,96C1200,64,1320,64,1380,64L1440,64L1440,0L1380,0C1320,0,1200,0,1080,0C960,0,840,0,720,0C600,0,480,0,360,0C240,0,120,0,60,0L0,0Z"></path>
+            <path fill="var(--accent-peach)" d="M0,160L60,144C120,128,240,96,360,112C480,128,600,192,720,192C840,192,960,128,1080,96C1200,64,1320,64,1380,64L1440,64L1440,0L1380,0C1320,0,1200,0,1080,0C960,0,840,0,720,0C600,0,480,0,360,0C240,0,120,0,60,0L0,0Z"></path>
         </svg>
     </div>
 
@@ -378,7 +324,7 @@
             <div class="flex items-center gap-6 md:gap-10">
                 <nav class="hidden lg:flex gap-12 text-[10px] uppercase font-black tracking-[0.3em] text-zinc-400">
                     <a href="#shop" class="hover:text-dark transition-all">Archive</a>
-                    <a href="#membership-section" id="nav-membership" class="hover:text-dark transition-all">Elite</a>
+                    <a href="#membership" class="hover:text-dark transition-all">Elite</a>
                 </nav>
                 <div class="flex items-center gap-6">
                     <button id="user-btn" class="text-dark hover:text-peach transition-colors">
@@ -431,7 +377,7 @@
         </section>
 
         <!-- MEMBERSHIP SECTION -->
-        <section id="membership-section" class="max-w-7xl mx-auto mb-52 px-6">
+        <section id="membership" class="max-w-7xl mx-auto mb-52 px-6">
             <div class="membership-ad-card p-6 md:p-12">
                 <div class="flex flex-col lg:flex-row gap-12 items-center">
                     <div class="w-full lg:w-3/5">
@@ -477,7 +423,7 @@
                         </div>
                         <div>
                             <p class="text-[9px] font-black text-zinc-300 uppercase tracking-[0.4em] mb-8">Social Protocol</p>
-                            <a href="https://www.instagram.com/sealedbrew?igsh=MWQxaHV0NWxzMWtkbg==" target="_blank" class="footer-link flex items-center gap-3 text-xs font-black uppercase tracking-widest transition-colors hover:text-[#E68A5E]">
+                            <a href="https://www.instagram.com/sealedbrew?igsh=MWQxaHV0NWxzMWtkbg==" target="_blank" class="footer-link flex items-center gap-3 text-xs font-black uppercase tracking-widest">
                                 <i class="fa-brands fa-instagram text-lg"></i>
                                 @sealedbrew
                             </a>
@@ -572,6 +518,21 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        // --- HAPTIC UTILITY ---
+        const triggerHaptic = (type = 'light') => {
+            try {
+                if ('vibrate' in navigator) {
+                    if (type === 'light') {
+                        navigator.vibrate(10); // Professional short tap
+                    } else if (type === 'success') {
+                        navigator.vibrate([20, 50, 40]); // Pulse for confirmation
+                    }
+                }
+            } catch (e) {
+                // Silently fail if vibration isn't supported or restricted
+            }
+        };
+
         const products = [
             { id: 1, name: "Velvet Caramel", category: "Silky Blends", price: 225, image: "1750860309593.jpg", color: "var(--accent-peach)" },
             { id: 2, name: "Brownie heaven Shake", category: "Silky Blends", price: 205, image: "1749905964964.jpg", color: "var(--accent-mint)" },
@@ -629,16 +590,8 @@
                 onSnapshot(doc(db, "users", u.uid), (snap) => {
                     if (snap.exists()) { 
                         userData = snap.data();
-                        const isElite = userData.role === 'elite';
-                        document.body.classList.toggle('is-elite', isElite);
-                        document.getElementById('elite-saving-notice').classList.toggle('hidden', !isElite);
-                        
-                        // Update Drip Color to match Gold when Elite
-                        document.getElementById('drip-peach').style.fill = isElite ? 'var(--elite-gold)' : 'var(--accent-peach)';
-                        
-                        // Hide Nav Link to Membership if Elite
-                        document.getElementById('nav-membership').style.display = isElite ? 'none' : 'block';
-
+                        document.body.classList.toggle('is-elite', userData.role === 'elite');
+                        document.getElementById('elite-saving-notice').classList.toggle('hidden', userData.role !== 'elite');
                         renderItems(); 
                         syncCart(); 
                     }
@@ -647,8 +600,6 @@
                 cart = []; 
                 userData = { role: 'standard' };
                 document.body.classList.remove('is-elite');
-                document.getElementById('drip-peach').style.fill = 'var(--accent-peach)';
-                document.getElementById('nav-membership').style.display = 'block';
                 renderItems();
                 syncCart(); 
             }
@@ -656,9 +607,9 @@
 
         document.getElementById('user-btn').onclick = () => {
             if (user) { 
-                const action = confirm(`Sealed Member: ${userData.name}\nStatus: ${userData.role.toUpperCase()}\n\nOK -> Order History\nCancel -> Sign Out`);
+                const action = confirm(`Sealed Member recognized.\nStatus: ${userData.role.toUpperCase()}\n\nPress OK to view Order History.\nPress Cancel to Sign Out.`);
                 if (action) viewOrders();
-                else if(confirm("Sign out of the archive?")) signOut(auth);
+                else if(confirm("Are you sure you want to sign out?")) signOut(auth);
             }
             else { document.getElementById('auth-modal').style.display = 'flex'; }
         };
@@ -671,6 +622,7 @@
             document.getElementById('legal-gateway').classList.add('hidden-gate');
             document.body.classList.remove('overflow-hidden');
             sessionStorage.setItem('gate-cleared', 'true');
+            triggerHaptic('light');
         };
 
         if(sessionStorage.getItem('gate-cleared')) {
@@ -695,7 +647,7 @@
                 const finalPrice = getPrice(p.price);
                 return `
                 <div class="pill-card group">
-                    <div class="pill-image-container" style="background: ${userData.role === 'elite' ? 'var(--elite-gold)' : p.color}20">
+                    <div class="pill-image-container" style="background: ${p.color}50">
                         <img src="${p.image}" class="w-full h-full object-cover transition-all duration-700 opacity-90 group-hover:scale-110">
                         <button onclick="addToCart(${p.id})" class="add-btn-pop shadow-md"><i class="fa-solid fa-plus text-sm"></i></button>
                     </div>
@@ -722,6 +674,7 @@
             if(exists) exists.qty++; 
             else cart.push({...itemData, price: finalPrice, qty: 1});
             
+            triggerHaptic('light'); // Vibration on add to cart
             await setDoc(doc(db, "carts", user.uid), { items: cart });
             toggleCart(true);
         };
@@ -731,6 +684,7 @@
             if(i) {
                 i.qty += d;
                 if(i.qty <= 0) cart = cart.filter(c => c.id != id);
+                triggerHaptic('light');
                 await setDoc(doc(db, "carts", user.uid), { items: cart });
             }
         };
@@ -740,7 +694,7 @@
             document.getElementById('cart-count').innerText = cart.reduce((a, b) => a + b.qty, 0);
             document.getElementById('cart-total').innerText = `₹${total}`;
             const list = document.getElementById('cart-list');
-            list.innerHTML = cart.length === 0 ? `<div class="py-20 text-center opacity-30 font-black uppercase text-xs tracking-widest">Bag empty</div>` : cart.map(i => `
+            list.innerHTML = cart.length === 0 ? `<div class="py-20 text-center opacity-30 font-black uppercase text-xs tracking-widest">Nothing here yet</div>` : cart.map(i => `
                 <div class="flex gap-4 items-center bg-zinc-50 p-5 rounded-[30px]">
                     <img src="${i.image}" class="w-14 h-14 object-cover rounded-2xl">
                     <div class="flex-grow min-w-0">
@@ -767,6 +721,9 @@
             };
             await addDoc(collection(db, "orders"), orderData);
             await setDoc(doc(db, "carts", user.uid), { items: [] });
+            
+            triggerHaptic('success'); // Professional pulse on order confirmation
+            
             document.getElementById('success-modal').classList.remove('hidden');
             document.getElementById('success-modal').classList.add('flex');
         };
@@ -775,7 +732,7 @@
             document.getElementById('orders-overlay').classList.remove('translate-x-full');
             const q = query(collection(db, "orders"), where("userId", "==", user.uid), orderBy("timestamp", "desc"));
             const snap = await getDocs(q);
-            document.getElementById('orders-list').innerHTML = snap.empty ? `<p class="py-24 text-center opacity-30 uppercase text-[10px] font-black tracking-[0.5em]">No reservations found.</p>` : snap.docs.map(d => `<div class="bg-zinc-50 p-8 rounded-[2rem]"><p class="text-[8px] font-black text-zinc-300 uppercase mb-2">ID: ${d.id.slice(0,8)}</p><h4 class="text-xl font-black brand-font mb-4">Confirmed Batch</h4><div class="space-y-1">${d.data().items.map(i => `<p class="text-[10px] font-bold text-zinc-400 uppercase">${i.qty}x ${i.name}</p>`).join('')}</div></div>`).join('');
+            document.getElementById('orders-list').innerHTML = snap.empty ? `<p class="py-24 text-center opacity-30 uppercase text-[10px] font-black tracking-[0.5em]">No reservations found.</p>` : snap.docs.map(d => `<div class="bg-zinc-50 p-8 rounded-[2rem]"><p class="text-[8px] font-black text-zinc-300 uppercase mb-2">REF: ${d.id.slice(0,8)}</p><h4 class="text-xl font-black brand-font mb-4">Reservation Active</h4><div class="space-y-1">${d.data().items.map(i => `<p class="text-[10px] font-bold text-zinc-400 uppercase">${i.qty}x ${i.name}</p>`).join('')}</div></div>`).join('');
         };
 
         document.getElementById('product-search').oninput = (e) => { searchQuery = e.target.value; renderItems(); };
@@ -785,6 +742,7 @@
             btn.classList.add('active');
             currentCategory = btn.dataset.cat;
             renderItems();
+            triggerHaptic('light');
         });
 
         function toggleCart(b) {
@@ -792,7 +750,7 @@
             document.getElementById('cart-bg').classList.toggle('opacity-0', !b);
             document.getElementById('cart-bg').classList.toggle('pointer-events-none', !b);
         }
-        window.openCheckout = () => { toggleCart(false); document.getElementById('checkout-overlay').classList.remove('translate-y-full'); };
+        window.openCheckout = () => { toggleCart(false); document.getElementById('checkout-overlay').classList.remove('translate-y-full'); triggerHaptic('light'); };
         window.closeCheckout = () => document.getElementById('checkout-overlay').classList.add('translate-y-full');
         window.closeOrders = () => document.getElementById('orders-overlay').classList.add('translate-x-full');
         document.getElementById('cart-open').onclick = () => toggleCart(true);
