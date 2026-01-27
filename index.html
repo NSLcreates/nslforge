@@ -523,14 +523,12 @@
             try {
                 if ('vibrate' in navigator) {
                     if (type === 'light') {
-                        navigator.vibrate(10); // Professional short tap
+                        navigator.vibrate(10); 
                     } else if (type === 'success') {
-                        navigator.vibrate([20, 50, 40]); // Pulse for confirmation
+                        navigator.vibrate([20, 50, 40]); 
                     }
                 }
-            } catch (e) {
-                // Silently fail if vibration isn't supported or restricted
-            }
+            } catch (e) {}
         };
 
         const products = [
@@ -674,7 +672,7 @@
             if(exists) exists.qty++; 
             else cart.push({...itemData, price: finalPrice, qty: 1});
             
-            triggerHaptic('light'); // Vibration on add to cart
+            triggerHaptic('light');
             await setDoc(doc(db, "carts", user.uid), { items: cart });
             toggleCart(true);
         };
@@ -722,7 +720,7 @@
             await addDoc(collection(db, "orders"), orderData);
             await setDoc(doc(db, "carts", user.uid), { items: [] });
             
-            triggerHaptic('success'); // Professional pulse on order confirmation
+            triggerHaptic('success');
             
             document.getElementById('success-modal').classList.remove('hidden');
             document.getElementById('success-modal').classList.add('flex');
