@@ -266,13 +266,10 @@
                 <button onclick="document.getElementById('auth-modal').style.display='none'"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
 
-            <!-- Social Logins -->
+            <!-- Social Logins (Apple removed) -->
             <div class="space-y-3 mb-8">
-                <button id="google-login" class="social-btn w-full py-4 rounded-full flex items-center justify-center gap-3 text-[10px] font-black uppercase tracking-widest">
+                <button id="google-login-btn" class="social-btn w-full py-4 rounded-full flex items-center justify-center gap-3 text-[10px] font-black uppercase tracking-widest">
                     <i class="fa-brands fa-google text-lg"></i> Continue with Google
-                </button>
-                <button id="apple-login" class="social-btn w-full py-4 rounded-full flex items-center justify-center gap-3 text-[10px] font-black uppercase tracking-widest">
-                    <i class="fa-brands fa-apple text-xl"></i> Continue with Apple
                 </button>
             </div>
 
@@ -538,8 +535,7 @@
             onAuthStateChanged, 
             signOut,
             GoogleAuthProvider,
-            signInWithPopup,
-            OAuthProvider 
+            signInWithPopup
         } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
         import { 
             getFirestore, 
@@ -556,7 +552,7 @@
             getDoc 
         } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
 
-        // Your Config
+        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyAU1yekU2rDq5hZZN9Xlu1HzWx6BXlhesI",
             authDomain: "sealed-brew.firebaseapp.com",
@@ -571,7 +567,6 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
         const googleProvider = new GoogleAuthProvider();
-        const appleProvider = new OAuthProvider('apple.com');
 
         // --- UTILS ---
         const triggerHaptic = (type = 'light') => {
@@ -610,13 +605,18 @@
             document.getElementById('auth-toggle-btn').innerText = isSignup ? 'Already have an account? Login' : 'Need an account? Sign up';
         };
 
-        // Google Login
-        document.getElementById('google-login').onclick = async () => {
+        // GOOGLE LOGIN FUNCTIONALITY
+        document.getElementById('google-login-btn').onclick = async () => {
             try {
                 const result = await signInWithPopup(auth, googleProvider);
+                // Ensure profile exists in Firestore after login
                 await syncUserProfile(result.user);
                 document.getElementById('auth-modal').style.display = 'none';
-            } catch (err) { alert("Google connection failed: " + err.message); }
+                triggerHaptic('success');
+            } catch (err) { 
+                console.error("Google Auth Error:", err);
+                alert("Google Login failed: " + err.message); 
+            }
         };
 
         // Email Form Submit
