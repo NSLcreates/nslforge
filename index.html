@@ -90,6 +90,18 @@
             transform: translateY(-2px);
         }
 
+        .social-btn {
+            background: white;
+            border: 1px solid rgba(0,0,0,0.1);
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+        }
+
+        .social-btn:hover {
+            border-color: var(--text-dark);
+            transform: translateY(-1px);
+        }
+
         /* STICKER */
         .badge-sticker {
             background: var(--accent-peach);
@@ -250,9 +262,26 @@
     <div id="auth-modal">
         <div class="max-w-md w-full p-10 soft-card rounded-[3rem]">
             <div class="flex justify-between items-center mb-8">
-                <h2 id="auth-title" class="text-2xl font-black brand-font uppercase">Member Login</h2>
+                <h2 id="auth-title" class="text-2xl font-black brand-font uppercase">Member Access</h2>
                 <button onclick="document.getElementById('auth-modal').style.display='none'"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
+
+            <!-- Social Logins -->
+            <div class="space-y-3 mb-8">
+                <button id="google-login" class="social-btn w-full py-4 rounded-full flex items-center justify-center gap-3 text-[10px] font-black uppercase tracking-widest">
+                    <i class="fa-brands fa-google text-lg"></i> Continue with Google
+                </button>
+                <button id="apple-login" class="social-btn w-full py-4 rounded-full flex items-center justify-center gap-3 text-[10px] font-black uppercase tracking-widest">
+                    <i class="fa-brands fa-apple text-xl"></i> Continue with Apple
+                </button>
+            </div>
+
+            <div class="relative flex py-5 items-center">
+                <div class="flex-grow border-t border-zinc-100"></div>
+                <span class="flex-shrink mx-4 text-[9px] font-black text-zinc-300 uppercase tracking-widest">or email</span>
+                <div class="flex-grow border-t border-zinc-100"></div>
+            </div>
+            
             <form id="auth-form" class="space-y-4">
                 <div id="signup-fields" class="hidden">
                     <input type="text" id="auth-name" placeholder="FULL NAME" class="form-input text-xs font-bold uppercase">
@@ -261,8 +290,9 @@
                 <input type="password" id="auth-password" placeholder="PASSWORD" required class="form-input text-xs font-bold uppercase">
                 <button type="submit" class="btn-pastel w-full py-6 rounded-full text-xs shadow-lg mt-4">Continue</button>
             </form>
+            
             <button onclick="toggleAuthMode()" id="auth-toggle-btn" class="w-full mt-6 text-[10px] font-black text-zinc-400 uppercase tracking-widest">
-                Create an account
+                Need an account? Sign up
             </button>
         </div>
     </div>
@@ -500,10 +530,33 @@
 
     <!-- FIREBASE INTEGRATION -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, addDoc, collection, onSnapshot, serverTimestamp, query, where, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
+        import { 
+            getAuth, 
+            createUserWithEmailAndPassword, 
+            signInWithEmailAndPassword, 
+            onAuthStateChanged, 
+            signOut,
+            GoogleAuthProvider,
+            signInWithPopup,
+            OAuthProvider 
+        } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
+        import { 
+            getFirestore, 
+            doc, 
+            setDoc, 
+            addDoc, 
+            collection, 
+            onSnapshot, 
+            serverTimestamp, 
+            query, 
+            where, 
+            orderBy, 
+            getDocs,
+            getDoc 
+        } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
 
+        // Your Config
         const firebaseConfig = {
             apiKey: "AIzaSyAU1yekU2rDq5hZZN9Xlu1HzWx6BXlhesI",
             authDomain: "sealed-brew.firebaseapp.com",
@@ -517,16 +570,15 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+        const googleProvider = new GoogleAuthProvider();
+        const appleProvider = new OAuthProvider('apple.com');
 
-        // --- HAPTIC UTILITY ---
+        // --- UTILS ---
         const triggerHaptic = (type = 'light') => {
             try {
                 if ('vibrate' in navigator) {
-                    if (type === 'light') {
-                        navigator.vibrate(10); 
-                    } else if (type === 'success') {
-                        navigator.vibrate([20, 50, 40]); 
-                    }
+                    if (type === 'light') navigator.vibrate(10); 
+                    else if (type === 'success') navigator.vibrate([20, 50, 40]); 
                 }
             } catch (e) {}
         };
@@ -550,13 +602,24 @@
         let searchQuery = '';
         let sortOrder = 'none';
 
+        // --- AUTH LOGIC ---
         window.toggleAuthMode = () => {
             isSignup = !isSignup;
-            document.getElementById('auth-title').innerText = isSignup ? 'Sign Up' : 'Member Login';
+            document.getElementById('auth-title').innerText = isSignup ? 'Create Account' : 'Member Login';
             document.getElementById('signup-fields').classList.toggle('hidden', !isSignup);
-            document.getElementById('auth-toggle-btn').innerText = isSignup ? 'Already have an account? Login' : 'Create an account';
+            document.getElementById('auth-toggle-btn').innerText = isSignup ? 'Already have an account? Login' : 'Need an account? Sign up';
         };
 
+        // Google Login
+        document.getElementById('google-login').onclick = async () => {
+            try {
+                const result = await signInWithPopup(auth, googleProvider);
+                await syncUserProfile(result.user);
+                document.getElementById('auth-modal').style.display = 'none';
+            } catch (err) { alert("Google connection failed: " + err.message); }
+        };
+
+        // Email Form Submit
         document.getElementById('auth-form').onsubmit = async (e) => {
             e.preventDefault();
             const email = document.getElementById('auth-email').value;
@@ -565,19 +628,27 @@
             try {
                 if (isSignup) {
                     const cred = await createUserWithEmailAndPassword(auth, email, pass);
-                    await setDoc(doc(db, "users", cred.user.uid), {
-                        uid: cred.user.uid,
-                        name: name || 'Guest',
-                        email: email,
-                        role: 'standard',
-                        createdAt: serverTimestamp()
-                    });
+                    await syncUserProfile(cred.user, name);
                 } else {
                     await signInWithEmailAndPassword(auth, email, pass);
                 }
                 document.getElementById('auth-modal').style.display = 'none';
             } catch (err) { alert(err.message); }
         };
+
+        async function syncUserProfile(firebaseUser, customName = null) {
+            const userRef = doc(db, "users", firebaseUser.uid);
+            const snap = await getDoc(userRef);
+            if (!snap.exists()) {
+                await setDoc(userRef, {
+                    uid: firebaseUser.uid,
+                    name: customName || firebaseUser.displayName || 'Guest',
+                    email: firebaseUser.email,
+                    role: 'standard',
+                    createdAt: serverTimestamp()
+                });
+            }
+        }
 
         onAuthStateChanged(auth, (u) => {
             user = u;
@@ -605,13 +676,14 @@
 
         document.getElementById('user-btn').onclick = () => {
             if (user) { 
-                const action = confirm(`Sealed Member recognized.\nStatus: ${userData.role.toUpperCase()}\n\nPress OK to view Order History.\nPress Cancel to Sign Out.`);
+                const action = confirm(`Sealed Member: ${userData.name}\nStatus: ${userData.role.toUpperCase()}\n\nOK -> Order History\nCancel -> Sign Out`);
                 if (action) viewOrders();
                 else if(confirm("Are you sure you want to sign out?")) signOut(auth);
             }
             else { document.getElementById('auth-modal').style.display = 'flex'; }
         };
 
+        // --- UI & SHOP LOGIC ---
         const gateCheck = document.getElementById('gate-check');
         const enterBtn = document.getElementById('enter-forge');
         document.getElementById('toggle-terms').onclick = () => document.getElementById('terms-box').classList.toggle('hidden');
@@ -692,7 +764,7 @@
             document.getElementById('cart-count').innerText = cart.reduce((a, b) => a + b.qty, 0);
             document.getElementById('cart-total').innerText = `₹${total}`;
             const list = document.getElementById('cart-list');
-            list.innerHTML = cart.length === 0 ? `<div class="py-20 text-center opacity-30 font-black uppercase text-xs tracking-widest">Nothing here yet</div>` : cart.map(i => `
+            list.innerHTML = cart.length === 0 ? `<div class="py-20 text-center opacity-30 font-black uppercase text-xs tracking-widest">Bag empty</div>` : cart.map(i => `
                 <div class="flex gap-4 items-center bg-zinc-50 p-5 rounded-[30px]">
                     <img src="${i.image}" class="w-14 h-14 object-cover rounded-2xl">
                     <div class="flex-grow min-w-0">
@@ -700,9 +772,9 @@
                         <p class="text-zinc-400 text-xs font-bold mt-1">₹${i.price}</p>
                     </div>
                     <div class="flex items-center gap-2">
-                        <button onclick="qty('${i.id}', -1)" class="w-7 h-7 rounded-full bg-white flex items-center justify-center">-</button>
+                        <button onclick="qty('${i.id}', -1)" class="w-7 h-7 rounded-full bg-white flex items-center justify-center shadow-sm">-</button>
                         <span class="text-xs font-black">${i.qty}</span>
-                        <button onclick="qty('${i.id}', 1)" class="w-7 h-7 rounded-full bg-white flex items-center justify-center">+</button>
+                        <button onclick="qty('${i.id}', 1)" class="w-7 h-7 rounded-full bg-white flex items-center justify-center shadow-sm">+</button>
                     </div>
                 </div>`).join('');
         }
@@ -719,9 +791,7 @@
             };
             await addDoc(collection(db, "orders"), orderData);
             await setDoc(doc(db, "carts", user.uid), { items: [] });
-            
             triggerHaptic('success');
-            
             document.getElementById('success-modal').classList.remove('hidden');
             document.getElementById('success-modal').classList.add('flex');
         };
@@ -730,7 +800,7 @@
             document.getElementById('orders-overlay').classList.remove('translate-x-full');
             const q = query(collection(db, "orders"), where("userId", "==", user.uid), orderBy("timestamp", "desc"));
             const snap = await getDocs(q);
-            document.getElementById('orders-list').innerHTML = snap.empty ? `<p class="py-24 text-center opacity-30 uppercase text-[10px] font-black tracking-[0.5em]">No reservations found.</p>` : snap.docs.map(d => `<div class="bg-zinc-50 p-8 rounded-[2rem]"><p class="text-[8px] font-black text-zinc-300 uppercase mb-2">REF: ${d.id.slice(0,8)}</p><h4 class="text-xl font-black brand-font mb-4">Reservation Active</h4><div class="space-y-1">${d.data().items.map(i => `<p class="text-[10px] font-bold text-zinc-400 uppercase">${i.qty}x ${i.name}</p>`).join('')}</div></div>`).join('');
+            document.getElementById('orders-list').innerHTML = snap.empty ? `<p class="py-24 text-center opacity-30 uppercase text-[10px] font-black tracking-[0.5em]">No history.</p>` : snap.docs.map(d => `<div class="bg-zinc-50 p-8 rounded-[2rem]"><p class="text-[8px] font-black text-zinc-300 uppercase mb-2">REF: ${d.id.slice(0,8)}</p><h4 class="text-xl font-black brand-font mb-4">Reservation Active</h4><div class="space-y-1">${d.data().items.map(i => `<p class="text-[10px] font-bold text-zinc-400 uppercase">${i.qty}x ${i.name}</p>`).join('')}</div></div>`).join('');
         };
 
         document.getElementById('product-search').oninput = (e) => { searchQuery = e.target.value; renderItems(); };
