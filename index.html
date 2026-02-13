@@ -566,7 +566,14 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+        
+        // --- UPDATED GOOGLE PROVIDER LOGIC ---
         const googleProvider = new GoogleAuthProvider();
+        googleProvider.setCustomParameters({
+            'client_id': '928263395069-ia2letb0ull6io3vj5uqh2qk75fg5pgm.apps.googleusercontent.com',
+            'prompt': 'select_account' // Forces account selection to avoid hanging on hidden attempts
+        });
+        // -------------------------------------
 
         // --- UTILS ---
         const triggerHaptic = (type = 'light') => {
@@ -615,7 +622,7 @@
                 triggerHaptic('success');
             } catch (err) { 
                 console.error("Google Auth Error:", err);
-                alert("Google Login failed: " + err.message); 
+                alert("Login Error: " + err.message); 
             }
         };
 
