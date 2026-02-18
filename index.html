@@ -28,6 +28,55 @@
 
         h1, h2, h3, h4, .brand-font { font-family: 'Playfair Display', serif; }
 
+        /* SPLASH SCREEN STYLES */
+        #splash-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: var(--bg-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s cubic-bezier(0.19, 1, 0.22, 1), visibility 0.8s;
+        }
+
+        .splash-logo {
+            font-size: 2.5rem;
+            font-weight: 900;
+            letter-spacing: -0.05em;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(0.98); opacity: 0.7; }
+        }
+
+        .loader-bar {
+            width: 140px;
+            height: 2px;
+            background: rgba(0,0,0,0.05);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .loader-progress {
+            position: absolute;
+            height: 100%;
+            width: 40%;
+            background: #E68A5E;
+            border-radius: 10px;
+            animation: slide 1.5s infinite ease-in-out;
+        }
+
+        @keyframes slide {
+            0% { left: -40%; }
+            100% { left: 100%; }
+        }
+
         /* ELITE UI OVERRIDES */
         .is-elite #user-btn { color: var(--elite-gold); filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.4)); }
         .elite-badge { display: none; }
@@ -258,6 +307,17 @@
 </head>
 <body class="antialiased overflow-hidden">
 
+    <!-- PREMIUM SPLASH SCREEN (ZOMATO/BLINKIT STYLE) -->
+    <div id="splash-screen">
+        <div class="splash-logo brand-font">
+            <span style="color: #E68A5E">SEALED</span><span>BREW</span>
+        </div>
+        <p class="text-[9px] uppercase tracking-[0.4em] font-black text-zinc-400 mb-6">Archive Protocol Initializing</p>
+        <div class="loader-bar">
+            <div class="loader-progress"></div>
+        </div>
+    </div>
+
     <!-- AUTH MODAL -->
     <div id="auth-modal">
         <div class="max-w-md w-full p-10 soft-card rounded-[3rem]">
@@ -266,7 +326,7 @@
                 <button onclick="document.getElementById('auth-modal').style.display='none'"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
 
-            <!-- Social Logins (Apple removed) -->
+            <!-- Social Logins -->
             <div class="space-y-3 mb-8">
                 <button id="google-login-btn" class="social-btn w-full py-4 rounded-full flex items-center justify-center gap-3 text-[10px] font-black uppercase tracking-widest">
                     <i class="fa-brands fa-google text-lg"></i> Continue with Google
@@ -567,13 +627,27 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
         
-        // --- UPDATED GOOGLE PROVIDER LOGIC ---
+        // --- GOOGLE PROVIDER ---
         const googleProvider = new GoogleAuthProvider();
         googleProvider.setCustomParameters({
-            'client_id': '928263395069-ia2letb0ull6io3vj5uqh2qk75fg5pgm.apps.googleusercontent.com',
-            'prompt': 'select_account' // Forces account selection to avoid hanging on hidden attempts
+            'prompt': 'select_account'
         });
-        // -------------------------------------
+
+        // --- SPLASH SCREEN HANDLER ---
+        window.addEventListener('load', () => {
+            const splash = document.getElementById('splash-screen');
+            // Minimum duration of 2 seconds for brand recognition
+            setTimeout(() => {
+                splash.style.opacity = '0';
+                splash.style.visibility = 'hidden';
+                // Only allow scrolling once splash is gone
+                if(!sessionStorage.getItem('gate-cleared')) {
+                     document.body.classList.add('overflow-hidden');
+                } else {
+                     document.body.classList.remove('overflow-hidden');
+                }
+            }, 2000);
+        });
 
         // --- UTILS ---
         const triggerHaptic = (type = 'light') => {
@@ -612,11 +686,9 @@
             document.getElementById('auth-toggle-btn').innerText = isSignup ? 'Already have an account? Login' : 'Need an account? Sign up';
         };
 
-        // GOOGLE LOGIN FUNCTIONALITY
         document.getElementById('google-login-btn').onclick = async () => {
             try {
                 const result = await signInWithPopup(auth, googleProvider);
-                // Ensure profile exists in Firestore after login
                 await syncUserProfile(result.user);
                 document.getElementById('auth-modal').style.display = 'none';
                 triggerHaptic('success');
@@ -626,7 +698,6 @@
             }
         };
 
-        // Email Form Submit
         document.getElementById('auth-form').onsubmit = async (e) => {
             e.preventDefault();
             const email = document.getElementById('auth-email').value;
