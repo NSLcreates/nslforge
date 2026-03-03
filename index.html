@@ -270,6 +270,18 @@
             padding: 1.5rem;
         }
 
+        /* ADMIN OVERLAY */
+        #admin-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 5000;
+            background: var(--bg-main);
+            display: none;
+            flex-direction: column;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
         /* MEMBERSHIP AD STYLES */
         .membership-ad-card {
             background: white;
@@ -315,6 +327,33 @@
         <p class="text-[9px] uppercase tracking-[0.4em] font-black text-zinc-400 mb-6">Archive Protocol Initializing</p>
         <div class="loader-bar">
             <div class="loader-progress"></div>
+        </div>
+    </div>
+
+    <!-- ADMIN LOGIN MODAL -->
+    <div id="admin-login-modal" class="fixed inset-0 z-[6000] bg-white flex items-center justify-center p-6 hidden">
+        <div class="max-w-md w-full p-10 soft-card rounded-[3rem]">
+            <h2 class="text-2xl font-black brand-font uppercase mb-8">Admin Gateway</h2>
+            <div class="space-y-4">
+                <input type="text" id="admin-user" placeholder="USERNAME" class="form-input text-xs font-bold uppercase">
+                <input type="password" id="admin-pass" placeholder="PASSWORD" class="form-input text-xs font-bold uppercase">
+                <button onclick="handleAdminLogin()" class="btn-pastel w-full py-6 rounded-full text-xs shadow-lg">Verify Protocol</button>
+                <button onclick="window.location.hash=''" class="w-full mt-4 text-[10px] font-black text-zinc-400 uppercase tracking-widest">Return to Archive</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN PANEL OVERLAY -->
+    <div id="admin-overlay">
+        <div class="max-w-6xl mx-auto w-full">
+            <div class="flex justify-between items-center mb-12">
+                <h2 class="text-4xl font-black brand-font uppercase">Archive <span class="italic text-zinc-300">Management</span></h2>
+                <button onclick="logoutAdmin()" class="btn-pastel px-8 py-3 rounded-full text-[10px]">Close Session</button>
+            </div>
+            
+            <div class="grid grid-cols-1 gap-6" id="admin-product-list">
+                <!-- Products to edit will be injected here -->
+            </div>
         </div>
     </div>
 
@@ -636,18 +675,55 @@
         // --- SPLASH SCREEN HANDLER ---
         window.addEventListener('load', () => {
             const splash = document.getElementById('splash-screen');
-            // Minimum duration of 2 seconds for brand recognition
             setTimeout(() => {
                 splash.style.opacity = '0';
                 splash.style.visibility = 'hidden';
-                // Only allow scrolling once splash is gone
                 if(!sessionStorage.getItem('gate-cleared')) {
                      document.body.classList.add('overflow-hidden');
                 } else {
                      document.body.classList.remove('overflow-hidden');
                 }
+                checkAdminRoute(); // Check for /admin after splash
             }, 2000);
         });
+
+        // --- ADMIN LOGIN LOGIC ---
+        window.handleAdminLogin = () => {
+            const userIn = document.getElementById('admin-user').value;
+            const passIn = document.getElementById('admin-pass').value;
+
+            if (userIn === 'naman' && passIn === 'namanfahaamsealedbrew') {
+                sessionStorage.setItem('admin-session', 'true');
+                document.getElementById('admin-login-modal').classList.add('hidden');
+                showAdminPanel();
+                triggerHaptic('success');
+            } else {
+                alert("Invalid Credentials. Access Denied.");
+            }
+        };
+
+        function checkAdminRoute() {
+            if (window.location.hash === '#admin') {
+                if (sessionStorage.getItem('admin-session') === 'true') {
+                    showAdminPanel();
+                } else {
+                    document.getElementById('admin-login-modal').classList.remove('hidden');
+                }
+            }
+        }
+
+        window.onhashchange = checkAdminRoute;
+
+        function showAdminPanel() {
+            document.getElementById('admin-overlay').style.display = 'flex';
+            renderAdminProducts();
+        }
+
+        window.logoutAdmin = () => {
+            sessionStorage.removeItem('admin-session');
+            document.getElementById('admin-overlay').style.display = 'none';
+            window.location.hash = '';
+        };
 
         // --- UTILS ---
         const triggerHaptic = (type = 'light') => {
@@ -659,7 +735,8 @@
             } catch (e) {}
         };
 
-        const products = [
+        // Default products
+        let currentProducts = [
             { id: 1, name: "Velvet Caramel", category: "Silky Blends", price: 225, image: "1750860309593.jpg", color: "var(--accent-peach)" },
             { id: 2, name: "Brownie heaven Shake", category: "Silky Blends", price: 205, image: "1749905964964.jpg", color: "var(--accent-mint)" },
             { id: 3, name: "Light mocha frappe", category: "Classic", price: 189, image: "1749905943104.jpg", color: "var(--accent-lavender)" },
@@ -678,6 +755,17 @@
         let searchQuery = '';
         let sortOrder = 'none';
 
+        // Listen for live product updates from Firestore
+        onSnapshot(doc(db, "settings", "inventory"), (snap) => {
+            if (snap.exists()) {
+                currentProducts = snap.data().items;
+                renderItems();
+                if (document.getElementById('admin-overlay').style.display === 'flex') {
+                    renderAdminProducts();
+                }
+            }
+        });
+
         // --- AUTH LOGIC ---
         window.toggleAuthMode = () => {
             isSignup = !isSignup;
@@ -692,10 +780,7 @@
                 await syncUserProfile(result.user);
                 document.getElementById('auth-modal').style.display = 'none';
                 triggerHaptic('success');
-            } catch (err) { 
-                console.error("Google Auth Error:", err);
-                alert("Login Error: " + err.message); 
-            }
+            } catch (err) { alert("Login Error: " + err.message); }
         };
 
         document.getElementById('auth-form').onsubmit = async (e) => {
@@ -784,7 +869,7 @@
         };
 
         function renderItems() {
-            let filtered = [...products];
+            let filtered = [...currentProducts];
             if (searchQuery) filtered = filtered.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
             if (currentCategory !== 'all') filtered = filtered.filter(p => p.category === currentCategory);
             if (sortOrder === 'low') filtered.sort((a,b) => getPrice(a.price) - getPrice(b.price));
@@ -812,9 +897,30 @@
                 </div>`}).join('');
         }
 
+        // --- ADMIN PANEL RENDERING & LOGIC ---
+        function renderAdminProducts() {
+            const list = document.getElementById('admin-product-list');
+            list.innerHTML = currentProducts.map((p, index) => `
+                <div class="bg-white p-6 rounded-[2rem] flex items-center gap-6 shadow-sm border border-zinc-50">
+                    <img src="${p.image}" class="w-16 h-16 rounded-2xl object-cover">
+                    <div class="flex-grow grid grid-cols-2 gap-4">
+                        <input type="text" value="${p.name}" onchange="updateProduct(${index}, 'name', this.value)" class="form-input text-xs font-bold uppercase" placeholder="Name">
+                        <input type="number" value="${p.price}" onchange="updateProduct(${index}, 'price', this.value)" class="form-input text-xs font-bold uppercase" placeholder="Price">
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        window.updateProduct = async (index, field, value) => {
+            if (field === 'price') value = parseInt(value);
+            currentProducts[index][field] = value;
+            await setDoc(doc(db, "settings", "inventory"), { items: currentProducts });
+            triggerHaptic('light');
+        };
+
         window.addToCart = async (id) => {
             if (!user) { document.getElementById('auth-modal').style.display = 'flex'; return; }
-            let itemData = id === 'MEMBERSHIP' ? { id: 'ELITE', name: "Forge Elite Membership", price: 399, image: "1750860309593.jpg" } : products.find(p => p.id === id);
+            let itemData = id === 'MEMBERSHIP' ? { id: 'ELITE', name: "Forge Elite Membership", price: 399, image: "1750860309593.jpg" } : currentProducts.find(p => p.id === id);
             
             const finalPrice = (id === 'MEMBERSHIP' || userData.role !== 'elite') ? itemData.price : getPrice(itemData.price);
             
