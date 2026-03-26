@@ -351,6 +351,24 @@
                 <button onclick="logoutAdmin()" class="btn-pastel px-8 py-3 rounded-full text-[10px]">Close Session</button>
             </div>
             
+            <!-- ADD NEW PRODUCT SECTION -->
+            <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-zinc-50 mb-12">
+                <h3 class="font-bold mb-6 uppercase text-sm brand-font">Add New Product</h3>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <input type="text" id="new-prod-name" placeholder="Name" class="form-input text-xs font-bold uppercase">
+                    <input type="number" id="new-prod-price" placeholder="Price" class="form-input text-xs font-bold uppercase">
+                    <select id="new-prod-cat" class="form-input text-xs font-bold uppercase cursor-pointer bg-zinc-50">
+                        <option value="Silky Blends">Silky Blends</option>
+                        <option value="Classic">Classic</option>
+                        <option value="Cloud Series">Cloud Series</option>
+                        <option value="Fruity Cold">Fruity Cold</option>
+                    </select>
+                    <input type="text" id="new-prod-img" placeholder="Image URL/Filename" class="form-input text-xs font-bold uppercase">
+                </div>
+                <button onclick="addNewProduct()" class="btn-pastel w-full py-4 rounded-full text-xs mt-6 shadow-md">Add to Archive</button>
+            </div>
+
+            <!-- PRODUCT LIST TO EDIT/DELETE -->
             <div class="grid grid-cols-1 gap-6" id="admin-product-list">
                 <!-- Products to edit will be injected here -->
             </div>
@@ -880,7 +898,7 @@
                 const finalPrice = getPrice(p.price);
                 return `
                 <div class="pill-card group">
-                    <div class="pill-image-container" style="background: ${p.color}50">
+                    <div class="pill-image-container" style="background: ${p.color || 'var(--coffee-foam)'}50">
                         <img src="${p.image}" class="w-full h-full object-cover transition-all duration-700 opacity-90 group-hover:scale-110">
                         <button onclick="addToCart(${p.id})" class="add-btn-pop shadow-md"><i class="fa-solid fa-plus text-sm"></i></button>
                     </div>
@@ -901,12 +919,16 @@
         function renderAdminProducts() {
             const list = document.getElementById('admin-product-list');
             list.innerHTML = currentProducts.map((p, index) => `
-                <div class="bg-white p-6 rounded-[2rem] flex items-center gap-6 shadow-sm border border-zinc-50">
+                <div class="bg-white p-6 rounded-[2rem] flex flex-col md:flex-row items-center gap-6 shadow-sm border border-zinc-50 relative">
                     <img src="${p.image}" class="w-16 h-16 rounded-2xl object-cover">
-                    <div class="flex-grow grid grid-cols-2 gap-4">
+                    <div class="flex-grow grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
                         <input type="text" value="${p.name}" onchange="updateProduct(${index}, 'name', this.value)" class="form-input text-xs font-bold uppercase" placeholder="Name">
                         <input type="number" value="${p.price}" onchange="updateProduct(${index}, 'price', this.value)" class="form-input text-xs font-bold uppercase" placeholder="Price">
+                        <input type="text" value="${p.image}" onchange="updateProduct(${index}, 'image', this.value)" class="form-input text-xs font-bold uppercase" placeholder="Image URL">
                     </div>
+                    <button onclick="deleteProduct(${index})" class="text-red-400 hover:text-red-600 transition-colors md:ml-4 mt-4 md:mt-0 px-4 py-2 bg-red-50 rounded-full" title="Remove Product">
+                        <i class="fa-solid fa-trash text-sm"></i>
+                    </button>
                 </div>
             `).join('');
         }
@@ -916,6 +938,52 @@
             currentProducts[index][field] = value;
             await setDoc(doc(db, "settings", "inventory"), { items: currentProducts });
             triggerHaptic('light');
+        };
+
+        window.addNewProduct = async () => {
+            const name = document.getElementById('new-prod-name').value;
+            const price = parseInt(document.getElementById('new-prod-price').value);
+            const category = document.getElementById('new-prod-cat').value;
+            const image = document.getElementById('new-prod-img').value || "1750860309593.jpg";
+
+            if (!name || isNaN(price)) {
+                alert("Please enter a valid Name and Price.");
+                return;
+            }
+
+            const newProduct = {
+                id: Date.now(), 
+                name: name,
+                category: category,
+                price: price,
+                image: image,
+                color: "var(--accent-peach)" // Default fallback color
+            };
+
+            currentProducts.push(newProduct);
+            
+            try {
+                await setDoc(doc(db, "settings", "inventory"), { items: currentProducts });
+                triggerHaptic('success');
+                // Clear inputs after successful add
+                document.getElementById('new-prod-name').value = '';
+                document.getElementById('new-prod-price').value = '';
+                document.getElementById('new-prod-img').value = '';
+            } catch (err) {
+                alert("Error adding product: " + err.message);
+            }
+        };
+
+        window.deleteProduct = async (index) => {
+            if (confirm("Are you sure you want to remove this product from the archive?")) {
+                currentProducts.splice(index, 1);
+                try {
+                    await setDoc(doc(db, "settings", "inventory"), { items: currentProducts });
+                    triggerHaptic('light');
+                } catch (err) {
+                    alert("Error removing product: " + err.message);
+                }
+            }
         };
 
         window.addToCart = async (id) => {
